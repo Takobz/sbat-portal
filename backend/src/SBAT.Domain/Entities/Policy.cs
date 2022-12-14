@@ -1,9 +1,10 @@
+using SBAT.Domain.Interfaces;
+
 namespace SBAT.Domain.Entities
 {
-    public class Policy
+    public class Policy : EntityBase
     {
-        public int ID { get; private set; }
         public string PolicyNumber { get; private set; } = string.Empty;
-        
+        public IEnumerable<Member> Members { get; private set; }
     }
 }

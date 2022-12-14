@@ -1,13 +1,13 @@
-using SBAT.Domain.ValueObjects;
+using SBAT.Domain.Enums;
+using SBAT.Domain.Interfaces;
 
 namespace SBAT.Domain.Entities
 {
-    public class User
+    public class User : EntityBase
     {
-        public int Id { get; private set; }
-        public string FirstName { get; private set; } = string.Empty;
+        public string FirstNames { get; private set; } = string.Empty;
         public string Surname { get; private set; } = string.Empty;
-        public Identification Identification { get; private set; }
+        public IdentityType IdentityType { get; private set; }
         public DateTime DateOfBirth { get; private set; }
         public int Age { get; private set; }
     }
