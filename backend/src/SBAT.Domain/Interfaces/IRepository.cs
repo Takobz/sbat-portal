@@ -1,8 +1,15 @@
+using System.Linq.Expressions;
+
 namespace SBAT.Domain.Interfaces
 {
     public interface IRepository<T> where T : EntityBase
     {
-        //add generic CRUD
+        T GetById(int id);
+        IEnumerable<T> List();
+        IEnumerable<T> List(Expression<Func<T, bool>> predicate);
+        void Add(T entity);
+        void Delete(T entity);
+        void Edit(T entity);
     }
 
     public class EntityBase 

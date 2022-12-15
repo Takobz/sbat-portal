@@ -3,6 +3,7 @@ using SBAT.Domain.Interfaces;
 
 namespace SBAT.Domain.Entities
 {
+    #pragma warning disable CS8618
     public class Plan : EntityBase
     {
         public PlanType PlanType { get; private set; }
