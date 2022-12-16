@@ -1,7 +1,7 @@
-using SBAT.Domain.Enums;
-using SBAT.Domain.Interfaces;
+using SBAT.Core.Enums;
+using SBAT.Core.Interfaces;
 
-namespace SBAT.Domain.Entities
+namespace SBAT.Core.Entities
 {
     #pragma warning disable CS8618
     public class Member : EntityBase

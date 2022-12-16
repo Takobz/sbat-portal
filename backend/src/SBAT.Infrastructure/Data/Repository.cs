@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using SBAT.Domain.Interfaces;
+using SBAT.Core.Interfaces;
 
 namespace SBAT.Infrastructure.Data
 {

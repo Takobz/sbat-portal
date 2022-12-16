@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SBAT.Domain.Interfaces
+namespace SBAT.Core.Interfaces
 {
     public interface IRepository<T> where T : EntityBase
     {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\SBAT.Domain\SBAT.Domain.csproj" />
+    <ProjectReference Include="..\SBAT.Core\SBAT.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

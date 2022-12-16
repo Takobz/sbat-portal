@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SBAT.Domain.Entities;
+using SBAT.Core.Entities;
 
 namespace SBAT.Infrastructure.Data
 {

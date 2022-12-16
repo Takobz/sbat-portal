@@ -1,4 +1,4 @@
-namespace SBAT.Domain.Enums
+namespace SBAT.Core.Enums
 {
     public enum PlanType 
     {
