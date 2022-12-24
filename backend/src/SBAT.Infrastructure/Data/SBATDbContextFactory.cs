@@ -7,6 +7,7 @@ namespace SBAT.Infrastructure.Data
     public class DbContextFactory : IDesignTimeDbContextFactory<SBATDbContext>
     {
         //dotnet 5+ pass argument 0 as environment: Development or empty string for prod
+        //run this from the project that has the database connection string i.e SBAT.Web in this instance
         public SBATDbContext CreateDbContext(string[] args)
         {
             var currentDir = Directory.GetCurrentDirectory();
