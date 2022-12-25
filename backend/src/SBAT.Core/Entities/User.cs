@@ -1,4 +1,3 @@
-using System;
 using SBAT.Core.Enums;
 using SBAT.Core.Interfaces;
 
