@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SBAT.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using SBAT.Infrastructure.Data;
 namespace SBAT.Infrastructure.Migrations
 {
     [DbContext(typeof(SBATDbContext))]
-    partial class SBATDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221225074125_AddUserIdentityNumber")]
+    partial class AddUserIdentityNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -91,6 +94,9 @@ namespace SBAT.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Age")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateOfBirth")

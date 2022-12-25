@@ -20,8 +20,8 @@ builder.Services.AddDatabaseContext(connectionStrings.SbatDatabase);
 builder.Services.AddRepositories();
 
 builder.Services.AddServices();
-
 builder.Services.AddMappings();
+builder.Services.AddModelValidations();
 
 var app = builder.Build();
 

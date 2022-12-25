@@ -9,7 +9,7 @@ namespace SBAT.Core.Entities
         public string FirstNames { get; private set; }
         public string Surname { get; private set; }
         public IdentityType IdentityType { get; private set; }
+        public int IdentityNumber { get; private set; }
         public DateTime DateOfBirth { get; private set; }
-        public int Age { get; private set; }
     }
 }

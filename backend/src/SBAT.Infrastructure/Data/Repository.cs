@@ -35,6 +35,13 @@ namespace SBAT.Infrastructure.Data
            return _dbContext.Set<T>().Find(id);
         }
 
+        public T? Get(Expression<Func<T, bool>> predicate)
+        {
+            return _dbContext.Set<T>()
+                .Where(predicate)
+                .FirstOrDefault();
+        }
+
         public IEnumerable<T> List()
         {
             return _dbContext.Set<T>().AsEnumerable();

@@ -28,6 +28,11 @@ namespace SBAT.Core.Services
             return _userRepository.GetById(id);
         }
 
+        public User? GetUser(Expression<Func<User, bool>> predicate)
+        {
+            return _userRepository.Get(predicate);
+        }
+
         public void UpdateUser(User user)
         {
             _userRepository.Update(user);
