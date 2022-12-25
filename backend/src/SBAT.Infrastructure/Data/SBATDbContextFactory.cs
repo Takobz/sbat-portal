@@ -12,7 +12,7 @@ namespace SBAT.Infrastructure.Data
         eg) using dotnet cli: dotnet ef migrations add InitialCreate -- Development
         */
         /**/
-        //run this from the project that has the database connection string i.e SBAT.Web in this instance
+        //run this from the Infra project i.e SBAT.Infrastructure in this instance
         public SBATDbContext CreateDbContext(string[] args)
         {
             var currentDir = Directory.GetCurrentDirectory();
