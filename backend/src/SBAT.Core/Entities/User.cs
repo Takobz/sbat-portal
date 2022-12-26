@@ -11,5 +11,11 @@ namespace SBAT.Core.Entities
         public IdentityType IdentityType { get; private set; }
         public int IdentityNumber { get; private set; }
         public DateTime DateOfBirth { get; private set; }
+
+        //Business Rules:
+        public void ChangeFirstNames(string firstNames)
+        {
+            FirstNames = firstNames;
+        }
     }
 }

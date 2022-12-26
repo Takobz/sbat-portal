@@ -31,11 +31,19 @@ namespace SBAT.Web.Controllers
             var user = _userService.GetUserById(id);
             if(user == null)
             {
-                return NotFound();
+                return NotFound($"User with id:{id} doesn't exist");
             }
             
             var userDto = _mapper.Map<UserResponse>(user);
             return Ok(userDto);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userService.GetUsers();
+            var usersDto = users.Select(u => _mapper.Map<UserResponse>(u));
+            return Ok(usersDto);
         }
 
         //TODO: Add ExceptionHandler extension!
@@ -60,7 +68,25 @@ namespace SBAT.Web.Controllers
         public IActionResult UpdateUserFirstNames(int id, [FromBody] UpdateFirstNamesRequest updateFirstNamesRequest)
         {
             var user = _userService.GetUserById(id);
-            //It's Xmas!!
+            if (user == null)
+            {
+                return NotFound($"User with id:{id} doesn't exist");
+            }
+
+            user!.ChangeFirstNames(updateFirstNamesRequest.FirstNames);
+            _userService.UpdateUser(user);
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = _userService.GetUserById(id);
+            if(user == null)
+            {
+                return NotFound($"User with id:{id} doesn't exist");
+            }
+            _userService.DeleteUser(user);
 
             return NoContent();
         }
