@@ -8,6 +8,7 @@ using SBAT.Web.Models.Response;
 
 namespace SBAT.Web.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
     public class UsersController : Controller
     {
@@ -46,7 +47,6 @@ namespace SBAT.Web.Controllers
             return Ok(usersDto);
         }
 
-        //TODO: Add ExceptionHandler extension!
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserRequest userRequest)
         {

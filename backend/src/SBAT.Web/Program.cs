@@ -1,4 +1,5 @@
 using SBAT.Infrastructure.ServiceCollection;
+using SBAT.Web.Helpers;
 using SBAT.Web.ServiceCollection;
 using SBAT.Web.Settings;
 
@@ -29,6 +30,8 @@ builder.Services.AddModelValidations();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler(err => err.UseCustomException(app.Environment));
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
