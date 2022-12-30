@@ -1,8 +1,6 @@
 using AutoMapper;
 using FluentValidation;
-using SBAT.Core.Entities;
-using SBAT.Core.Interfaces;
-using SBAT.Core.Services;
+using SBAT.Infrastructure.Identity;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
 using SBAT.Web.Validations;
@@ -15,14 +13,14 @@ namespace SBAT.Web.ServiceCollection
         {
             service.AddSingleton(new MapperConfiguration(cfg => {
                 #region User
-                cfg.CreateMap<User, UserResponse>();
-                cfg.CreateMap<UserRequest, User>();
+                cfg.CreateMap<ApplicationUser, UserResponse>();
+                cfg.CreateMap<UserRequest, ApplicationUser>();
                 #endregion
             }).CreateMapper());
         }
         public static void AddServices(this IServiceCollection service)
         {
-            service.AddTransient<IUserService, UserService>();
+            //to be implemented
         }
 
         public static void AddModelValidations(this IServiceCollection service)

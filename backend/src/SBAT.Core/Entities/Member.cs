@@ -3,13 +3,14 @@ using SBAT.Core.Interfaces;
 
 namespace SBAT.Core.Entities
 {
-    #pragma warning disable CS8618
+#pragma warning disable CS8618
     public class Member : EntityBase
     {
-        public int UserId { get; private set; }
-        public string PolicyNumber { get; private set; }
+        public string FirstNames { get; private set; }
+        public string Surname { get; private set; }
+        public DateTime DateOfBirth { get; private set; }
         public Relationship Relationship { get; private set; }
 
-        public User User { get; private set; }
+        public Policy Policy { get; private set; }
     }
 }

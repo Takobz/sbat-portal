@@ -19,7 +19,7 @@ namespace SBAT.Infrastructure.ServiceCollection
 
         public static void AddRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IRepository<User>, Repository<User>>();
+            //to be implemented
         }
     }
 }
