@@ -61,10 +61,11 @@ namespace SBAT.Web.Controllers
             return Created($"login/{userName}", new Response<UserResponse> { Data = createdUser});
         }
 
-        [AllowAnonymous]
-        public async Task<IActionResult> Login()
-        {
-            throw new NotImplementedException();
-        }
+        // I don't like warnings :)
+        // [AllowAnonymous]
+        // public async Task<IActionResult> Login()
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 }
