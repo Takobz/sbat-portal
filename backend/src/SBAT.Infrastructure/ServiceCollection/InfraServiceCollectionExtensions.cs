@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,12 @@ namespace SBAT.Infrastructure.ServiceCollection
             {
                 options.UseSqlite(connectionString);
             });
+        }
+
+        public static void AddIdentityManager(this IServiceCollection services)
+        {
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<SBATDbContext>();
         }
 
         public static void AddRepositories(this IServiceCollection services)

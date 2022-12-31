@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SBAT.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using SBAT.Infrastructure.Data;
 namespace SBAT.Infrastructure.Migrations
 {
     [DbContext(typeof(SBATDbContext))]
-    partial class SBATDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221231152037_ApplicationUser")]
+    partial class ApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -296,14 +299,6 @@ namespace SBAT.Infrastructure.Migrations
             modelBuilder.Entity("SBAT.Infrastructure.Identity.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("FirstNames")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });

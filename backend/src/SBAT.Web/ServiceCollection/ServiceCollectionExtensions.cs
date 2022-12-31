@@ -15,6 +15,11 @@ namespace SBAT.Web.ServiceCollection
                 #region User
                 cfg.CreateMap<ApplicationUser, UserResponse>();
                 cfg.CreateMap<UserRequest, ApplicationUser>();
+
+                cfg.CreateMap<RegisterUserRequest, ApplicationUser>()
+                    //.ForMember(appUser => appUser, opt => opt.MapFrom()) - TODO: add password on register
+                    .ForMember(appUser => appUser.UserName, opt => opt.MapFrom(userReq => 
+                    $"{userReq.IdentityType}-{userReq.IdentityNumber}")); //i.e SA-12345567788 or ZIM-123456789
                 #endregion
             }).CreateMapper());
         }
@@ -27,6 +32,7 @@ namespace SBAT.Web.ServiceCollection
         public static void AddModelValidations(this IServiceCollection service)
         {
             service.AddTransient<IValidator<UserRequest>, UserRequestValidation>();
+            service.AddTransient<IValidator<RegisterUserRequest>, RegisterUserRequestValidation>();
         }
     }
 }

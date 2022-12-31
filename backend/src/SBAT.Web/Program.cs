@@ -25,8 +25,10 @@ if(connectionStrings is not null)
 }
 
 //Add Infra dependencies
+builder.Services.AddIdentityManager();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddTokenClaimsService();
 
 //Add Web.API services
 builder.Services.AddServices();
