@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using SBAT.Infrastructure.ServiceCollection;
 using SBAT.Web.Helpers;
 using SBAT.Web.ServiceCollection;
@@ -21,8 +24,11 @@ if(connectionStrings is not null)
     builder.Services.AddDatabaseContext(connectionStrings!.SbatDatabase);
 }
 
+//Add Infra dependencies
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddRepositories();
 
+//Add Web.API services
 builder.Services.AddServices();
 builder.Services.AddMappings();
 builder.Services.AddModelValidations();
@@ -40,6 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

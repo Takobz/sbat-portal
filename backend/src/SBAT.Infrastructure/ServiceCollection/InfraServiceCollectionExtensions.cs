@@ -1,8 +1,14 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SBAT.Core.Entities;
 using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Data;
+using SBAT.Infrastructure.Identity;
 
 namespace SBAT.Infrastructure.ServiceCollection
 {
@@ -11,7 +17,7 @@ namespace SBAT.Infrastructure.ServiceCollection
     {
         public static void AddDatabaseContext(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<SBATDbContext>(options => 
+            services.AddDbContext<SBATDbContext>(options =>
             {
                 options.UseSqlite(connectionString);
             });
@@ -20,6 +26,31 @@ namespace SBAT.Infrastructure.ServiceCollection
         public static void AddRepositories(this IServiceCollection services)
         {
             //to be implemented
+        }
+
+        public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            var authenticationSection = configuration.GetSection(JwtOptions.Authentication)
+                .Get<JwtOptions>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = authenticationSection!.Issuer,
+                        ValidAudience = authenticationSection!.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSection!.Key)),
+                    };
+                });
+        }
+
+        public static void AddTokenClaimsService(this IServiceCollection services)
+        {
+            services.AddTransient<ITokenClaimsService, TokenClaimsService>();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace SBAT.Web.ServiceCollection
                 #endregion
             }).CreateMapper());
         }
+        
         public static void AddServices(this IServiceCollection service)
         {
             //to be implemented
