@@ -21,12 +21,22 @@ namespace SBAT.Web.Validations
         }
     }
 
+    public class SignInUserRequestValidation : AbstractValidator<SignInUserRequest>
+    {
+        public SignInUserRequestValidation()
+        {
+            RuleFor(siu => siu.Email).NotEmpty();
+            RuleFor(siu => siu.Password).NotEmpty();
+        }
+    }
+
     public class RegisterUserRequestValidation : AbstractValidator<RegisterUserRequest>
     {
         public RegisterUserRequestValidation()
         {
-            RuleFor(rur => rur).Must(HaveValidNames);
-            RuleFor(rur => rur).Must(HaveValidEmail);
+            RuleFor(rur => rur).Must(HaveValidNames).WithMessage("FirstNames or Surname can't be null");
+            RuleFor(rur => rur).Must(HaveValidEmail).WithMessage("Please provide valid email address");
+            RuleFor(rur => rur).Must(HaveNonNullValidPasswords).WithMessage("Password empty or not correctly confirmed");
             RuleFor(rur => rur.IdentityType).IsInEnum();
             RuleFor(rur => rur.IdentityNumber).NotEmpty();
         }
@@ -40,6 +50,12 @@ namespace SBAT.Web.Validations
         private bool HaveValidEmail(RegisterUserRequest userRequest)
         {
             return new EmailAddressAttribute().IsValid(userRequest.Email) && !string.IsNullOrEmpty(userRequest.Email);
+        }
+
+        private bool HaveNonNullValidPasswords(RegisterUserRequest userRequest)
+        {
+            return !(string.IsNullOrEmpty(userRequest.Password) && string.IsNullOrEmpty(userRequest.ConfirmPassword)) 
+                && (userRequest.Password == userRequest.ConfirmPassword);
         }
     }
 }

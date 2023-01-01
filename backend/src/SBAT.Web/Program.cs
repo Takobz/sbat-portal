@@ -1,6 +1,3 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using SBAT.Infrastructure.ServiceCollection;
 using SBAT.Web.Helpers;
 using SBAT.Web.ServiceCollection;
