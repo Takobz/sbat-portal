@@ -51,6 +51,8 @@ namespace SBAT.Infrastructure.ServiceCollection
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSection!.Key)),
                     };
                 });
+
+            services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Authentication));
         }
 
         public static void AddTokenClaimsService(this IServiceCollection services)

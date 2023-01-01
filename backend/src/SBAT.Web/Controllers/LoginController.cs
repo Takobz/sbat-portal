@@ -16,17 +16,20 @@ namespace SBAT.Web.Controllers
     public class LoginController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenClaimsService _tokenClaimsService;
         private readonly IValidationResolver _validatorResolver;
         private readonly IMapper _mapper;
 
         public LoginController(
             UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ITokenClaimsService tokenClaimsService,
             IValidationResolver validatorResolver,
             IMapper mapper)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _tokenClaimsService = tokenClaimsService ?? throw new ArgumentNullException(nameof(tokenClaimsService));
             _validatorResolver = validatorResolver ?? throw new ArgumentNullException(nameof(validatorResolver));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,14 +42,10 @@ namespace SBAT.Web.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest registerUser)
         {
             var registerUserValidator = _validatorResolver.GetValidator<RegisterUserRequest>();
-            var validationResult = registerUserValidator.Validate(registerUser);
-            if (!validationResult.IsValid)
+            var validationErrors = registerUserValidator.ValidateModelAndGetErrorMessages(registerUser);
+            if (validationErrors != null && validationErrors.Any())
             {
-                var errors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return BadRequest(new Response<EmptyResponse>
-                {
-                    Errors = errors
-                });
+                return BadRequest(new Response<EmptyResponse> { Errors = validationErrors });
             }
 
             var userName = $"{registerUser.IdentityType}-{registerUser.IdentityNumber}";
@@ -80,12 +79,39 @@ namespace SBAT.Web.Controllers
             return Created($"login/{userName}", new Response<UserResponse> { Data = createdUser});
         }
 
+        [HttpPost]
         [AllowAnonymous]
         [Route("sign-in")]
         public async Task<IActionResult> SignIn([FromBody] SignInUserRequest signInUser)
         {
             var signInValidaor = _validatorResolver.GetValidator<SignInUserRequest>();
-            throw new NotImplementedException();
+            var validationErrors = signInValidaor.ValidateModelAndGetErrorMessages(signInUser);
+            if(validationErrors != null && validationErrors.Any())
+            {
+                return BadRequest(new Response<EmptyResponse>{ Errors = validationErrors });
+            }
+
+            var signInResult = await _signInManager.PasswordSignInAsync(userName: signInUser.Username, password: signInUser.Password,
+                 isPersistent: false, lockoutOnFailure: false);
+            if(signInResult == null || !signInResult.Succeeded)
+            {
+                return Unauthorized(new Response<EmptyResponse>
+                { 
+                    Errors = new List<string> { $"User: {signInUser.Username} is not authorised, please check if password/username is correct" } 
+                });
+            }
+
+            var userToken = await _tokenClaimsService.GetTokenAsync(signInUser.Username);
+            var response = new SignInUserResponse 
+            {
+                Username = signInUser.Username,
+                JwtToken = userToken
+            };
+
+            return Ok(new Response<SignInUserResponse>
+            {
+                Data = response
+            });
         }
     }
 }

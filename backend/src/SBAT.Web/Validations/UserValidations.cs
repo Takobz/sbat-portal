@@ -25,7 +25,7 @@ namespace SBAT.Web.Validations
     {
         public SignInUserRequestValidation()
         {
-            RuleFor(siu => siu.Email).NotEmpty();
+            RuleFor(siu => siu.Username).NotEmpty();
             RuleFor(siu => siu.Password).NotEmpty();
         }
     }
