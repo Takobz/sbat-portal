@@ -17,6 +17,7 @@ namespace SBAT.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<ApplicationUser> _roleManager;
         private readonly ITokenClaimsService _tokenClaimsService;
         private readonly IValidationResolver _validatorResolver;
         private readonly IMapper _mapper;
@@ -24,12 +25,14 @@ namespace SBAT.Web.Controllers
         public LoginController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            RoleManager<ApplicationUser> roleManager,
             ITokenClaimsService tokenClaimsService,
             IValidationResolver validatorResolver,
             IMapper mapper)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _tokenClaimsService = tokenClaimsService ?? throw new ArgumentNullException(nameof(tokenClaimsService));
             _validatorResolver = validatorResolver ?? throw new ArgumentNullException(nameof(validatorResolver));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -73,6 +76,7 @@ namespace SBAT.Web.Controllers
                 });
             }
 
+
             user = await _userManager.FindByNameAsync(userName);
             var createdUser = _mapper.Map<UserResponse>(user);
 
@@ -113,5 +117,7 @@ namespace SBAT.Web.Controllers
                 Data = response
             });
         }
+
+        //TODO: Add cookies for sign-in
     }
 }

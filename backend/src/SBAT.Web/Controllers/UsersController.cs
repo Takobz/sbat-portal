@@ -19,7 +19,7 @@ namespace SBAT.Web.Controllers
             _mapper = mapper;
             _userRequestValidator = userRequestValidator;
         }
-
+        
         
     }
 }

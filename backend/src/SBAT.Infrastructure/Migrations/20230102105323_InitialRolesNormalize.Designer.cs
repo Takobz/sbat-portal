@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SBAT.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using SBAT.Infrastructure.Data;
 namespace SBAT.Infrastructure.Migrations
 {
     [DbContext(typeof(SBATDbContext))]
-    partial class SBATDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230102105323_InitialRolesNormalize")]
+    partial class InitialRolesNormalize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");

@@ -17,7 +17,7 @@ namespace SBAT.Web.ServiceCollection
                 cfg.CreateMap<ApplicationUser, UserResponse>();
                 cfg.CreateMap<UserRequest, ApplicationUser>();
 
-                cfg.CreateMap<RegisterUserRequest, ApplicationUser>() //- TODO: add password on register
+                cfg.CreateMap<RegisterUserRequest, ApplicationUser>()
                     .ForMember(appUser => appUser.UserName, opt => opt.MapFrom(userReq => 
                     $"{userReq.IdentityType}-{userReq.IdentityNumber}")); //i.e SA-12345567788 or ZIM-123456789
                 #endregion

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SBAT.Core.Entities;
@@ -13,5 +14,22 @@ namespace SBAT.Infrastructure.Data
         public DbSet<Member> Members { get; private set; }
         public DbSet<Plan> Plan { get; private set; }
         public DbSet<Policy> Policies { get; private set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<IdentityRole>()
+                .HasData(
+                    new IdentityRole(RolesConstants.User) 
+                    {
+                        NormalizedName = RolesConstants.User.ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    },
+                    new IdentityRole(RolesConstants.MainMemeber)
+                    {
+                        NormalizedName = RolesConstants.MainMemeber.ToUpper(),
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    });
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

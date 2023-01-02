@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SBAT.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using SBAT.Infrastructure.Data;
 namespace SBAT.Infrastructure.Migrations
 {
     [DbContext(typeof(SBATDbContext))]
-    partial class SBATDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230102104556_InitialRoles")]
+    partial class InitialRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -45,17 +48,13 @@ namespace SBAT.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2abaa385-af28-47d7-8e13-4066e7f39913",
-                            ConcurrencyStamp = "13155046-8190-472f-ac7c-1ec4f6ce7acd",
-                            Name = "User",
-                            NormalizedName = "USER"
+                            Id = "d25cb39c-c205-4091-a519-0926cb26b14a",
+                            Name = "User"
                         },
                         new
                         {
-                            Id = "79942054-7c48-4dc7-8261-d9c6adbad2e9",
-                            ConcurrencyStamp = "718f4e57-60b8-422b-8828-11fa87f0985e",
-                            Name = "MainMemeber",
-                            NormalizedName = "MAINMEMEBER"
+                            Id = "d6df6296-a7c7-409b-a8c3-048b86b667ca",
+                            Name = "MainMemeber"
                         });
                 });
 
