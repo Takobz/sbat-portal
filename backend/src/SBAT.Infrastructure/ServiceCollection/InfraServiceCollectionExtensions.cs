@@ -51,6 +51,18 @@ namespace SBAT.Infrastructure.ServiceCollection
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSection!.Key)),
                     };
                 });
+            
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy(RolesConstants.User, authBuilder => 
+                {
+                    authBuilder.RequireRole(RolesConstants.User);
+                });
+                options.AddPolicy(RolesConstants.MainMemeber, authBuilder => 
+                {
+                    authBuilder.RequireRole(RolesConstants.MainMemeber);
+                });
+            });
 
             services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Authentication));
         }

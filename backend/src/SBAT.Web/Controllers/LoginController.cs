@@ -17,7 +17,6 @@ namespace SBAT.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationUser> _roleManager;
         private readonly ITokenClaimsService _tokenClaimsService;
         private readonly IValidationResolver _validatorResolver;
         private readonly IMapper _mapper;
@@ -25,14 +24,12 @@ namespace SBAT.Web.Controllers
         public LoginController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<ApplicationUser> roleManager,
             ITokenClaimsService tokenClaimsService,
             IValidationResolver validatorResolver,
             IMapper mapper)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _tokenClaimsService = tokenClaimsService ?? throw new ArgumentNullException(nameof(tokenClaimsService));
             _validatorResolver = validatorResolver ?? throw new ArgumentNullException(nameof(validatorResolver));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -68,18 +65,29 @@ namespace SBAT.Web.Controllers
             IdentityResult identityResult = await _userManager.CreateAsync(user, registerUser.ConfirmPassword);
             if (!identityResult.Succeeded)
             {
-                var errors = identityResult.Errors.Select(err => err.Description).ToList();
+                //should I return Ok or am I doing too much work in one controller?
+                var identityErrors = identityResult.Errors.Select(err => err.Description).ToList();
                 return Ok(new Response<EmptyResponse>
                 {
                     Data = new EmptyResponse(),
-                    Errors = errors
+                    Errors = identityErrors
                 });
             }
 
+            user = await _userManager.FindByNameAsync(userName) ??
+                throw new ArgumentNullException($"Couldn't Find newly created user: {userName}");
+            var rolesResult = await _userManager.AddToRoleAsync(user, RolesConstants.User);
+            if (!rolesResult.Succeeded)
+            {
+                var roleErrors = rolesResult.Errors.Select(err => err.Description).ToList();
+                return Ok(new Response<EmptyResponse>
+                {
+                    Data = new EmptyResponse(),
+                    Errors = roleErrors
+                });
+            }
 
-            user = await _userManager.FindByNameAsync(userName);
             var createdUser = _mapper.Map<UserResponse>(user);
-
             return Created($"login/{userName}", new Response<UserResponse> { Data = createdUser});
         }
 
