@@ -19,7 +19,7 @@ namespace SBAT.Web.Models.Request
         public string Telephone { get; set; } = string.Empty;
         public string WorkTelephone { get; set; } = string.Empty;
         public string Cellphone { get; set; } = string.Empty;
-        public Relationship Relationship { get; private set; }
+        public Relationship Relationship { get; private set; } = Relationship.MainMember; //this should always be main on init create
         public string StreetLine { get; set; } = string.Empty;
         public string SuburbOrTownLine { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
