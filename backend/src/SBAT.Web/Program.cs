@@ -25,10 +25,10 @@ if(connectionStrings is not null)
 builder.Services.AddIdentityManager();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddRepositories();
-builder.Services.AddTokenClaimsService();
+InfraServiceCollectionExtension.AddInfraServices(builder.Services);
 
 //Add Web.API services
-builder.Services.AddServices();
+ServiceCollectionExtensions.AddServices(builder.Services);
 builder.Services.AddMappings();
 builder.Services.AddModelValidations();
 

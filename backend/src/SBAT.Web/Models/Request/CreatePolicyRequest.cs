@@ -14,6 +14,7 @@ namespace SBAT.Web.Models.Request
         public string FirstNames { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; private set; }
+        public IdentityType IdentityType { get; set; } = IdentityType.SAIdentification;
         public int IdentityNumber { get; set; }
         public string Telephone { get; set; } = string.Empty;
         public string WorkTelephone { get; set; } = string.Empty;
