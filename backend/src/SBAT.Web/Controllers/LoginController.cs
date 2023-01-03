@@ -11,6 +11,7 @@ using SBAT.Web.Models.Response;
 namespace SBAT.Web.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
     public class LoginController : Controller
     {

@@ -1,5 +1,6 @@
 using AutoMapper;
 using FluentValidation;
+using SBAT.Core.Entities;
 using SBAT.Infrastructure.Identity;
 using SBAT.Web.Helpers;
 using SBAT.Web.Models.Request;
@@ -20,6 +21,12 @@ namespace SBAT.Web.ServiceCollection
                 cfg.CreateMap<RegisterUserRequest, ApplicationUser>()
                     .ForMember(appUser => appUser.UserName, opt => opt.MapFrom(userReq => 
                     $"{userReq.IdentityType}-{userReq.IdentityNumber}")); //i.e SA-12345567788 or ZIM-123456789
+                #endregion
+
+                #region Policy
+                cfg.CreateMap<MemberRequest, Member>();
+                cfg.CreateMap<CreatePolicyRequest, Policy>()
+                    .ForMember(pol => pol.Members, opt => opt.MapFrom(req => new List<MemberRequest> { req.MainMember }));
                 #endregion
             }).CreateMapper());
         }

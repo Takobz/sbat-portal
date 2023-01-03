@@ -10,9 +10,15 @@ namespace SBAT.Core.Entities
         public string PolicyNumber { get; private set; }
         public IEnumerable<Member> Members { get; private set; }
 
-        public void SetPolicyPrincipleMemeber(string userName)
+        //handle this in mapper?
+        public void CreateMainMember(string userName)
         {
             PrincipalMemberUserName = userName;
+        }
+
+        public void CreatePolicyNumber(string policyNumber)
+        {
+            PolicyNumber = policyNumber;
         }
     }
 }
