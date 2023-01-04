@@ -64,9 +64,10 @@ namespace SBAT.Web.Controllers
                 policy.CreateMainMember(User.Identity.Name);
             }
 
-            //return CreatePolicyResponse
             _policyService.CreatePolicy(policy);
-            return Ok();
+            var createdPolicy = _policyService.GetPolicyByPolicyNumber(policyNumber);
+            var createdPolicyResponse = _mapper.Map<CreatePolicyResponse>(createdPolicy);
+            return Ok(createdPolicyResponse);
         }
     }
 }

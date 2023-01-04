@@ -27,6 +27,9 @@ namespace SBAT.Web.ServiceCollection
                 cfg.CreateMap<MemberRequest, Member>();
                 cfg.CreateMap<CreatePolicyRequest, Policy>()
                     .ForMember(pol => pol.Members, opt => opt.MapFrom(req => new List<MemberRequest> { req.MainMember }));
+
+                cfg.CreateMap<Member, MemberResponse>();
+                cfg.CreateMap<Policy, CreatePolicyResponse>();
                 #endregion
             }).CreateMapper());
         }
