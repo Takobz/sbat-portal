@@ -11,6 +11,7 @@ import {
 interface LoginDialogProps {
   open: boolean;
   onClose: () => void;
+  onLoginClick: () => void;
 }
 
 

@@ -20,6 +20,10 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
   const handleClose = () =>{
     setOpen(false);
   }
+
+  const handleLoginClick = () =>{
+    
+  }
   
   return (
     <>
@@ -34,7 +38,7 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
             <Button color="inherit" onClick={handleOpen}>Login</Button>
         </Toolbar>
       </AppBar>
-      <LoginDialog open={open} onClose={handleClose}></LoginDialog>
+      <LoginDialog open={open} onClose={handleClose} onLoginClick={handleLoginClick}></LoginDialog>
     </>
   );
 };
