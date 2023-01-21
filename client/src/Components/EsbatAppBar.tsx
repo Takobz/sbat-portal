@@ -9,6 +9,7 @@ type AppBarProps = {
 
 const EsbatAppBar = ({ label }: AppBarProps) => {
   const [open, setOpen] = useState(false);
+  const [isUserAuthd, setIsUserAuthd] = useState(false);
 
   const handleOpen = () =>{
     setOpen((prevOpen) =>{
