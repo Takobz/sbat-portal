@@ -6,6 +6,7 @@ using SBAT.Web.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+const string _allowAll = "freeForAll";
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -32,6 +33,16 @@ ServiceCollectionExtensions.AddServices(builder.Services);
 builder.Services.AddMappings();
 builder.Services.AddModelValidations();
 
+//Cors
+
+builder.Services.AddCors(options =>  {
+    options.AddPolicy(_allowAll, builder => {
+        builder.AllowAnyOrigin();
+        builder.AllowAnyHeader();
+        builder.AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +59,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors(_allowAll);
 app.MapControllers();
 
 app.Run();

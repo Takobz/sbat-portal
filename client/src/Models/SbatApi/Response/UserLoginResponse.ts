@@ -1,6 +1,6 @@
 interface UserLoginResponse {
-    Username: string,
-    JwtToken: string
+    username: string,
+    jwtToken: string
 }
 
 export default UserLoginResponse;

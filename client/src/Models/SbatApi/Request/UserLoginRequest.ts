@@ -1,7 +1,7 @@
 interface UserLoginRequest
 {
-    Username: string,
-    Password: string
+    username: string,
+    password: string
 }
 
 export default  UserLoginRequest;

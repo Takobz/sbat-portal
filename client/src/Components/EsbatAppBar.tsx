@@ -1,7 +1,11 @@
 import { AppBar, IconButton, Toolbar, Typography, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu"
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import  LoginDialog from "./LoginDialog";
 import { useState } from "react";
+import UserLoginResponse from "../Models/SbatApi/Response/UserLoginResponse";
+import UserLoginRequest from "../Models/SbatApi/Request/UserLoginRequest"
+import LoginUser from "../Services/SbatApiService"
 
 type AppBarProps = {
     label: string
@@ -10,6 +14,7 @@ type AppBarProps = {
 const EsbatAppBar = ({ label }: AppBarProps) => {
   const [open, setOpen] = useState(false);
   const [isUserAuthd, setIsUserAuthd] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<UserLoginResponse>({} as UserLoginResponse);
 
   const handleOpen = () =>{
     setOpen((prevOpen) =>{
@@ -21,8 +26,25 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
     setOpen(false);
   }
 
-  const handleLoginClick = () =>{
-    
+  const getUserLoginData = async (loginUser: UserLoginRequest) => {
+    try{
+      const result = await LoginUser({ username: loginUser.username, password: loginUser.password});
+      setLoggedInUser(result); //TODO: route to appropriarte page with data
+    }
+    catch(e){
+      //inform user in some way we have an err
+      console.log(e);
+    }
+  }
+
+  const handleAuth = (loginUser: UserLoginRequest) =>{
+    console.log(loginUser);
+    getUserLoginData(loginUser);
+
+    setIsUserAuthd((prevAuthd) =>{
+      setOpen(false);
+      return !prevAuthd;
+    });
   }
   
   return (
@@ -35,10 +57,10 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                 {label}
             </Typography>
-            <Button color="inherit" onClick={handleOpen}>Login</Button>
+            {isUserAuthd ? <IconButton><AccountCircleIcon/></IconButton> : <Button color="inherit" onClick={handleOpen}>Login</Button>}
         </Toolbar>
       </AppBar>
-      <LoginDialog open={open} onClose={handleClose} onLoginClick={handleLoginClick}></LoginDialog>
+      <LoginDialog open={open} onClose={handleClose} onAuth={handleAuth}></LoginDialog>
     </>
   );
 };
