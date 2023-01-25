@@ -34,7 +34,7 @@ builder.Services.AddMappings();
 builder.Services.AddModelValidations();
 
 //Cors
-
+//Add more specific cors policies.
 builder.Services.AddCors(options =>  {
     options.AddPolicy(_allowAll, builder => {
         builder.AllowAnyOrigin();
