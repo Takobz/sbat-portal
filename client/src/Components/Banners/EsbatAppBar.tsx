@@ -1,11 +1,11 @@
 import { AppBar, IconButton, Toolbar, Typography, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import  LoginDialog from "./LoginDialog";
+import  LoginDialog from "../Login/LoginDialog";
 import { useState } from "react";
-import UserLoginResponse from "../Models/SbatApi/Response/UserLoginResponse";
-import UserLoginRequest from "../Models/SbatApi/Request/UserLoginRequest"
-import LoginUser from "../Services/SbatApiService"
+import UserLoginResponse from "../../Models/SbatApi/Response/UserLoginResponse";
+import UserLoginRequest from "../../Models/SbatApi/Request/UserLoginRequest"
+import LoginUser from "../../Services/SbatApiService"
 
 type AppBarProps = {
     label: string
@@ -62,6 +62,7 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
       </AppBar>
       <LoginDialog open={open} onClose={handleClose} onAuth={handleAuth}></LoginDialog>
     </>
+    
   );
 };
 

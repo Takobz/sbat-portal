@@ -1,4 +1,4 @@
-import EsbatAppBar from "./Components/EsbatAppBar";
+import EsbatAppBar from "./Components/Banners/EsbatAppBar";
 import * as AppConstants from './constants/AppConstants'
 import "./App.css";
 
