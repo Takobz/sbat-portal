@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Entities;
 using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Identity;
+using SBAT.Infrastructure.Interfaces;
 using SBAT.Web.Helpers;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
@@ -18,25 +19,26 @@ namespace SBAT.Web.Controllers
     {
         private readonly IValidationResolver _validationResolver;
         private readonly IPolicyService _policyService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
         public PolicyController(
             IValidationResolver validationResolver,
             IPolicyService policyService,
             UserManager<ApplicationUser> userManager,
+            IUserService userService,
             IMapper mapper)
         {
             _validationResolver = validationResolver ?? throw new ArgumentNullException(nameof(validationResolver));
             _policyService = policyService ?? throw new ArgumentNullException(nameof(policyService));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpPost]
         [Authorize(Policy = RolesConstants.User)]
         [Route("create")]
-        public IActionResult CreatePolicyMemeberShip([FromBody] CreatePolicyRequest createPolicy)
+        public async Task<IActionResult> CreatePolicyMemeberShip([FromBody] CreatePolicyRequest createPolicy)
         {
             var createPolicyValidator = _validationResolver.GetValidator<CreatePolicyRequest>();
             var validationResult = createPolicyValidator.Validate(createPolicy);
@@ -46,27 +48,30 @@ namespace SBAT.Web.Controllers
                 return BadRequest(new Response<EmptyResponse> { Errors = validationErrors });
             }
 
-            var policyNumber = _policyService.GeneratePolicyNumber();
-            var policy = _mapper.Map<Policy>(createPolicy);
-            policy.CreatePolicyNumber(policyNumber);
             if (User.Identity is null || string.IsNullOrEmpty(User?.Identity?.Name))
             {
                 var userName = $"{createPolicy.MainMember.IdentityType}-{createPolicy.MainMember.IdentityNumber}";
-                var user = _userManager.FindByNameAsync(userName);
-                if (user is null)
-                {
-                    return Ok(new Response<EmptyResponse> { Errors = new List<string> { $"User with username: {userName} doesn't exist" } });
-                }
-                policy.CreateMainMember(userName);
+                return Ok(new Response<EmptyResponse>
+                { Errors = new List<string> { $"User with username: {userName} doesn't exist" } });
             }
-            else
+
+            var policyNumber = _policyService.GeneratePolicyNumber();
+            var policy = _mapper.Map<Policy>(createPolicy);
+            policy.CreatePolicyNumber(policyNumber);
+
+            policy.CreateMainMember(User.Identity.Name);
+            var user = await _userService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user is null)
             {
-                policy.CreateMainMember(User.Identity.Name);
+                return BadRequest(new Response<EmptyResponse>
+                { Errors = new List<string> { $"Couldn't get user with username: {User.Identity.Name}" } });
             }
+            await _userService.AddedUserRoleAsync(user, RolesConstants.MainMemeber);
 
             _policyService.CreatePolicy(policy);
             var createdPolicy = _policyService.GetPolicyByPolicyNumber(policyNumber);
             var createdPolicyResponse = _mapper.Map<CreatePolicyResponse>(createdPolicy);
+
             return Ok(createdPolicyResponse);
         }
 

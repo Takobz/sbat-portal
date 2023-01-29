@@ -9,6 +9,7 @@ using SBAT.Core.Entities;
 using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Data;
 using SBAT.Infrastructure.Identity;
+using SBAT.Infrastructure.Interfaces;
 using SBAT.Infrastructure.Services;
 
 namespace SBAT.Infrastructure.ServiceCollection
@@ -33,6 +34,7 @@ namespace SBAT.Infrastructure.ServiceCollection
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddTransient<IRepository<Policy>, Repository<Policy>>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
