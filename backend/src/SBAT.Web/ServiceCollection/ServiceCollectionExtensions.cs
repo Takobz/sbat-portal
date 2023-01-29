@@ -30,6 +30,7 @@ namespace SBAT.Web.ServiceCollection
 
                 cfg.CreateMap<Member, MemberResponse>();
                 cfg.CreateMap<Policy, CreatePolicyResponse>();
+                cfg.CreateMap<Policy, GetPolicyResponse>();
                 #endregion
             }).CreateMapper());
         }

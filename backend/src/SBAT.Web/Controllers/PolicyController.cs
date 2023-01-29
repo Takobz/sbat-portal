@@ -69,5 +69,36 @@ namespace SBAT.Web.Controllers
             var createdPolicyResponse = _mapper.Map<CreatePolicyResponse>(createdPolicy);
             return Ok(createdPolicyResponse);
         }
+
+        [HttpGet("memberships/{principalMemberUsercode}")]
+        [Authorize(Policy = RolesConstants.MainMemeber)]
+        public IActionResult GetMemberPolicies(string principalMemberUsercode)
+        {
+            //TODO make mainmember claim on jwt token creation
+
+            if (string.IsNullOrEmpty(principalMemberUsercode))
+            {
+                return BadRequest();
+            }
+
+            var userPolicies = _policyService.GetUserPolicies(principalMemberUsercode);
+            if (userPolicies == null || !userPolicies.Any())
+            {
+                return NotFound();
+            }
+
+            var userPoliciesResponse = userPolicies
+                .Select(pol => _mapper.Map<GetPolicyResponse>(pol))
+                .ToList();
+
+            return Ok(new Response<ICollection<GetPolicyResponse>> { Data = userPoliciesResponse });
+        }
+
+        // [HttpPut]
+        // [Authorize(Policy = RolesConstants.MainMemeber)]
+        // public IActionResult AddMemeberToPolicy([FromBody] CreateMemberRequest createMember)
+        // {
+
+        // }
     }
 }
