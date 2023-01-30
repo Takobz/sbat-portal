@@ -15,13 +15,11 @@ namespace SBAT.Infrastructure.Services
 
         public async Task AddedUserRoleAsync(ApplicationUser user, string role)
         {
-            //Care to add some check in case of failure?
             await _userManager.AddToRoleAsync(user, role);
         }
 
-        public async Task<ApplicationUser> GetUserByUsernameAsync(string userIdentity)
+        public async Task<ApplicationUser?> GetUserByUsernameAsync(string userIdentity)
         {
-            //better way?
             return await _userManager.FindByNameAsync(userIdentity);
         }
     }

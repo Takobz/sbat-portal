@@ -25,7 +25,6 @@ namespace SBAT.Web.Controllers
         public PolicyController(
             IValidationResolver validationResolver,
             IPolicyService policyService,
-            UserManager<ApplicationUser> userManager,
             IUserService userService,
             IMapper mapper)
         {
@@ -48,39 +47,24 @@ namespace SBAT.Web.Controllers
                 return BadRequest(new Response<EmptyResponse> { Errors = validationErrors });
             }
 
-            if (User.Identity is null || string.IsNullOrEmpty(User?.Identity?.Name))
-            {
-                var userName = $"{createPolicy.MainMember.IdentityType}-{createPolicy.MainMember.IdentityNumber}";
-                return Ok(new Response<EmptyResponse>
-                { Errors = new List<string> { $"User with username: {userName} doesn't exist" } });
-            }
-
-            var policyNumber = _policyService.GeneratePolicyNumber();
             var policy = _mapper.Map<Policy>(createPolicy);
-            policy.CreatePolicyNumber(policyNumber);
-
-            policy.CreateMainMember(User.Identity.Name);
-            var user = await _userService.GetUserByUsernameAsync(User.Identity.Name);
+            var user = await _userService.GetUserByUsernameAsync(createPolicy.MainMemberUserName);
             if (user is null)
             {
                 return BadRequest(new Response<EmptyResponse>
-                { Errors = new List<string> { $"Couldn't get user with username: {User.Identity.Name}" } });
+                { Errors = new List<string> { $"Couldn't get user with username: {createPolicy.MainMemberUserName}" } });
             }
             await _userService.AddedUserRoleAsync(user, RolesConstants.MainMemeber);
 
-            _policyService.CreatePolicy(policy);
-            var createdPolicy = _policyService.GetPolicyByPolicyNumber(policyNumber);
+            var createdPolicy = _policyService.CreatePolicy(policy);
             var createdPolicyResponse = _mapper.Map<CreatePolicyResponse>(createdPolicy);
-
-            return Ok(createdPolicyResponse);
+            return Ok(new Response<CreatePolicyResponse> { Data = createdPolicyResponse});
         }
 
         [HttpGet("memberships/{principalMemberUsercode}")]
         [Authorize(Policy = RolesConstants.MainMemeber)]
         public IActionResult GetMemberPolicies(string principalMemberUsercode)
         {
-            //TODO make mainmember claim on jwt token creation
-
             if (string.IsNullOrEmpty(principalMemberUsercode))
             {
                 return BadRequest();

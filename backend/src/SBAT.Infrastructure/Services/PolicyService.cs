@@ -1,6 +1,5 @@
 using SBAT.Core.Entities;
 using SBAT.Core.Interfaces;
-using SBAT.Infrastructure.Data;
 
 namespace SBAT.Infrastructure.Services
 {
@@ -27,9 +26,14 @@ namespace SBAT.Infrastructure.Services
             return _policyRepository.List(p => p.PrincipalMemberUserName == userName);
         }
 
-        public void CreatePolicy(Policy policy)
+        public Policy? CreatePolicy(Policy policy)
         {
+            var policyNumber = GeneratePolicyNumber();
+            policy.CreatePolicyNumber(policyNumber);
+            policy.CreateMainMember(policy.PrincipalMemberUserName);
+
             _policyRepository.Add(policy);
+            return _policyRepository.Get(p => p.PolicyNumber == policyNumber);;
         }
 
         public void ModifyPolicy(Policy policy)
