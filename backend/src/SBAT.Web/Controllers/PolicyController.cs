@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Entities;
 using SBAT.Core.Interfaces;
@@ -70,6 +69,7 @@ namespace SBAT.Web.Controllers
                 return BadRequest();
             }
 
+            //include memebers on call!
             var userPolicies = _policyService.GetUserPolicies(principalMemberUsercode);
             if (userPolicies == null || !userPolicies.Any())
             {

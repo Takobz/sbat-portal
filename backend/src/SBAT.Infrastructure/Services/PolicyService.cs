@@ -33,7 +33,7 @@ namespace SBAT.Infrastructure.Services
             policy.CreateMainMember(policy.PrincipalMemberUserName);
 
             _policyRepository.Add(policy);
-            return _policyRepository.Get(p => p.PolicyNumber == policyNumber);;
+            return _policyRepository.Get(p => p.PolicyNumber == policyNumber);
         }
 
         public void ModifyPolicy(Policy policy)
