@@ -4,6 +4,8 @@ using SBAT.Core.Interfaces;
 
 namespace SBAT.Infrastructure.Data
 {
+    //Remove this let every entity have it's own Repo
+    
     public class Repository<T> : IRepository<T> where T : EntityBase
     {
         private readonly SBATDbContext _dbContext;
@@ -32,7 +34,7 @@ namespace SBAT.Infrastructure.Data
 
         public T? GetById(int id)
         {
-           return _dbContext.Set<T>().Find(id);
+            return _dbContext.Set<T>().Find(id);
         }
 
         public T? Get(Expression<Func<T, bool>> predicate)
@@ -47,11 +49,18 @@ namespace SBAT.Infrastructure.Data
             return _dbContext.Set<T>().AsEnumerable();
         }
 
-        public IEnumerable<T> List(Expression<Func<T, bool>> predicate)
+        public IEnumerable<T> List(Expression<Func<T, bool>> predicate, params string[]? relatedEntities)
         {
-            return _dbContext.Set<T>()
-                    .Where(predicate)
-                    .AsEnumerable();
+            IQueryable<T> queryable = _dbContext.Set<T>().Where(predicate);
+            if (relatedEntities != null && relatedEntities.Any())
+            {
+                foreach (var relatedEntity in relatedEntities)
+                {
+                    queryable.Include(relatedEntity);
+                }
+            }
+
+            return queryable.AsEnumerable();
         }
     }
 }

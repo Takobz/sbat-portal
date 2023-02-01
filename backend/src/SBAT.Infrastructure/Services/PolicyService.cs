@@ -23,7 +23,8 @@ namespace SBAT.Infrastructure.Services
 
         public IEnumerable<Policy> GetUserPolicies(string userName)
         {
-            return _policyRepository.List(p => p.PrincipalMemberUserName == userName);
+            //this can be better, idl this :( - FIX!
+            return _policyRepository.List(p => p.PrincipalMemberUserName == userName, "Members");
         }
 
         public Policy? CreatePolicy(Policy policy)

@@ -2,12 +2,13 @@ using System.Linq.Expressions;
 
 namespace SBAT.Core.Interfaces
 {
+    //TODO Saparate these
     public interface IRepository<T> where T : EntityBase
     {
         T? Get(Expression<Func<T, bool>> predicate);
         T? GetById(int id);
         IEnumerable<T> List();
-        IEnumerable<T> List(Expression<Func<T, bool>> predicate);
+        IEnumerable<T> List(Expression<Func<T, bool>> predicate, params string[]? relatedEntities);
         void Add(T entity);
         void Delete(T entity);
         //update the whole entry's columns
