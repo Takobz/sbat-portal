@@ -7,7 +7,7 @@ namespace SBAT.Core.Interfaces
         Policy? GetPolicyByPolicyNumber(string policyNumber);
         Policy? GetPolicyById(int policyId);
         IEnumerable<Policy> GetUserPolicies(string userName);
-        void CreatePolicy(Policy policy);
+        Policy? CreatePolicy(Policy policy);
         void ModifyPolicy(Policy policy);
         void DeletePolicy(Policy policy);
         string GeneratePolicyNumber();
