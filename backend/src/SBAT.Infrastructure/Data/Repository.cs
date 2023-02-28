@@ -4,8 +4,6 @@ using SBAT.Core.Interfaces;
 
 namespace SBAT.Infrastructure.Data
 {
-    //Remove this let every entity have it's own Repo
-    
     public class Repository<T> : IRepository<T> where T : EntityBase
     {
         private readonly SBATDbContext _dbContext;

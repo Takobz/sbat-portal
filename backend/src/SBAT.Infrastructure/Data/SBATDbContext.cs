@@ -7,13 +7,17 @@ using SBAT.Infrastructure.Identity;
 namespace SBAT.Infrastructure.Data
 {
     #pragma warning disable CS8618
-    public class SBATDbContext : IdentityDbContext
+    public class SBATDbContext : IdentityDbContext, ISBATDbContext
     {
         public SBATDbContext(DbContextOptions<SBATDbContext> options) : base(options) {}
         public DbSet<ApplicationUser> ApplicationUsers { get; private set; }
         public DbSet<Member> Members { get; private set; }
         public DbSet<Plan> Plan { get; private set; }
         public DbSet<Policy> Policies { get; private set; }
+        public void Save()
+        {
+            base.SaveChanges();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,5 +35,15 @@ namespace SBAT.Infrastructure.Data
                     });
             base.OnModelCreating(modelBuilder);
         }
+    }
+
+    public interface ISBATDbContext 
+    {
+        public DbSet<ApplicationUser> ApplicationUsers { get; }
+        public DbSet<Member> Members { get; }
+        public DbSet<Plan> Plan { get; }
+        public DbSet<Policy> Policies { get; }
+
+        void Save();
     }
 }

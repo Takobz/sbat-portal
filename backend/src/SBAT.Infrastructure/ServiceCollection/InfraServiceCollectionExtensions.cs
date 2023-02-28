@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using SBAT.Core.Entities;
 using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Data;
 using SBAT.Infrastructure.Identity;
@@ -33,7 +32,8 @@ namespace SBAT.Infrastructure.ServiceCollection
 
         public static void AddRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IRepository<Policy>, Repository<Policy>>();
+            services.AddTransient<ISBATDbContext, SBATDbContext>();
+            services.AddTransient<IPolicyRepository, PolicyRepository>();
             services.AddTransient<IUserService, UserService>();
         }
 

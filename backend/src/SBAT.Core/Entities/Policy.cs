@@ -9,6 +9,7 @@ namespace SBAT.Core.Entities
         public string PrincipalMemberUserName { get; private set; }
         public string PolicyNumber { get; private set; }
         public IEnumerable<Member> Members { get; private set; }
+        public PolicyType Type { get; private set; }
 
         public void CreateMainMember(string userName)
         {
