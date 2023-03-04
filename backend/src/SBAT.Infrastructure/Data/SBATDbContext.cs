@@ -16,7 +16,7 @@ namespace SBAT.Infrastructure.Data
         public DbSet<Policy> Policies { get; private set; }
         public void Save()
         {
-            base.SaveChanges();
+            var x = base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

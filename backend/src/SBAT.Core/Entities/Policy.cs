@@ -11,12 +11,12 @@ namespace SBAT.Core.Entities
         public IEnumerable<Member> Members { get; private set; }
         public PolicyType Type { get; private set; }
 
-        public void CreateMainMember(string userName)
+        public void AddMainMember(string userName)
         {
             PrincipalMemberUserName = userName;
         }
 
-        public void CreatePolicyNumber(string policyNumber)
+        public void AddPolicyNumber(string policyNumber)
         {
             PolicyNumber = policyNumber;
         }

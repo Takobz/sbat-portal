@@ -9,14 +9,15 @@ namespace SBAT.Infrastructure.Data
 
         public PolicyRepository(ISBATDbContext iSbatDbContext)
         {
-            iSbatDbContext = _iSbatDbContext ?? throw new ArgumentNullException(nameof(iSbatDbContext));
+            _iSbatDbContext = iSbatDbContext ?? throw new ArgumentNullException(nameof(iSbatDbContext));
         }
 
         public Policy? CreatePolicy(Policy policy)
         {
             var newPolicyNumber = GeneratePolicyNumber(policy.Type);
-            policy.CreatePolicyNumber(newPolicyNumber);
-            policy.CreateMainMember(policy.PrincipalMemberUserName);
+            policy.AddPolicyNumber(newPolicyNumber);
+            policy.AddMainMember(policy.PrincipalMemberUserName);
+            _iSbatDbContext.Policies.Add(policy);
             _iSbatDbContext.Save();
             
             return _iSbatDbContext.Policies.FirstOrDefault(p => p.PolicyNumber == newPolicyNumber);

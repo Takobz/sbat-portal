@@ -25,6 +25,8 @@ namespace SBAT.Web.Validations
             RuleFor(mr => mr.City).NotEmpty();
             RuleFor(mr => mr.Country).NotEmpty();
             RuleFor(mr => mr.Cellphone).NotEmpty();
+            RuleFor(mr => mr.IdentityType).IsInEnum();
+            RuleFor(mr => mr.PolicyType).IsInEnum();
             RuleFor(mr => mr.DateOfBirth)
                 .NotNull();
         }

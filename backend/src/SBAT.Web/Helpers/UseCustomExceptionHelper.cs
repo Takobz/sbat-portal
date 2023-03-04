@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,28 @@ namespace SBAT.Web.Helpers
         {
             var exceptionDetails = httpContext.Features.Get<IExceptionHandlerFeature>();
             var exception = exceptionDetails?.Error;
-            if (exception is not null)
+
+            if (exception is not null && exception.GetType() == typeof(ValidationException))
+            {
+                httpContext.Response.ContentType = "application/problem+json";
+                var title = includeDetails ? exception.Message : "A Validation Error Occurred";
+                var problem = new ProblemDetails
+                {
+                    Status = 400,
+                    Title = title,
+                    Detail = exception.ToString()
+                };
+
+                var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
+                if (traceId is not null)
+                {
+                    problem.Extensions["tradeId"] = traceId;
+                }
+
+                var stream = httpContext!.Response.Body;
+                await JsonSerializer.SerializeAsync(stream, problem);
+            }
+            else if (exception is not null)
             {
                 httpContext.Response.ContentType = "application/problem+json";
                 var title = includeDetails ? exception.Message : "An error occured";

@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Entities;
@@ -8,45 +7,33 @@ using SBAT.Infrastructure.Interfaces;
 using SBAT.Web.Helpers;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
+using SBAT.Web.SBATValidation;
 
 namespace SBAT.Web.Controllers
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
-    public class PolicyController : Controller
+    public class PolicyController : SBATBaseController<PolicyController>
     {
-        private readonly IValidationResolver _validationResolver;
         private readonly IPolicyService _policyService;
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
         public PolicyController(
-            IValidationResolver validationResolver,
             IPolicyService policyService,
-            IUserService userService,
-            IMapper mapper)
+            IUserService userService)
         {
-            _validationResolver = validationResolver ?? throw new ArgumentNullException(nameof(validationResolver));
             _policyService = policyService ?? throw new ArgumentNullException(nameof(policyService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpPost]
         [Authorize(Policy = RolesConstants.User)]
         [Route("create")]
+        [SBATValidation<CreatePolicyRequest>]
         public async Task<IActionResult> CreatePolicyMemeberShip([FromBody] CreatePolicyRequest createPolicy)
         {
-            var createPolicyValidator = _validationResolver.GetValidator<CreatePolicyRequest>();
-            var validationResult = createPolicyValidator.Validate(createPolicy);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                return BadRequest(new Response<EmptyResponse> { Errors = validationErrors });
-            }
-
-            var policy = _mapper.Map<Policy>(createPolicy);
+            var policy = Mapper.Map<Policy>(createPolicy);
             var user = await _userService.GetUserByUsernameAsync(createPolicy.MainMemberUserName);
             if (user is null)
             {
@@ -56,7 +43,7 @@ namespace SBAT.Web.Controllers
             await _userService.AddedUserRoleAsync(user, RolesConstants.MainMemeber);
 
             var createdPolicy = _policyService.CreatePolicy(policy);
-            var createdPolicyResponse = _mapper.Map<CreatePolicyResponse>(createdPolicy);
+            var createdPolicyResponse = Mapper.Map<CreatePolicyResponse>(createdPolicy);
             return Ok(new Response<CreatePolicyResponse> { Data = createdPolicyResponse});
         }
 
@@ -77,7 +64,7 @@ namespace SBAT.Web.Controllers
             }
 
             var userPoliciesResponse = userPolicies
-                .Select(pol => _mapper.Map<GetPolicyResponse>(pol))
+                .Select(pol => Mapper.Map<GetPolicyResponse>(pol))
                 .ToList();
 
             return Ok(new Response<ICollection<GetPolicyResponse>> { Data = userPoliciesResponse });
