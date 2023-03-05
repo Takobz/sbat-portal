@@ -1,7 +1,7 @@
 using SBAT.Core.Entities;
 using SBAT.Core.Enums;
 
-namespace SBAT.Infrastructure.Data
+namespace SBAT.Infrastructure.Data.Repos
 {
     public class PolicyRepository : IPolicyRepository 
     {

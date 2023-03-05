@@ -7,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Data;
+using SBAT.Infrastructure.Data.Repos;
 using SBAT.Infrastructure.Identity;
-using SBAT.Infrastructure.Interfaces;
 using SBAT.Infrastructure.Services;
 
 namespace SBAT.Infrastructure.ServiceCollection
@@ -34,7 +34,7 @@ namespace SBAT.Infrastructure.ServiceCollection
         {
             services.AddTransient<ISBATDbContext, SBATDbContext>();
             services.AddTransient<IPolicyRepository, PolicyRepository>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ILoginRepository, LoginRepository>();
         }
 
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
@@ -74,7 +74,6 @@ namespace SBAT.Infrastructure.ServiceCollection
         public static void AddInfraServices(this IServiceCollection services)
         {
             services.AddTransient<ITokenClaimsService, TokenClaimsService>();
-            services.AddTransient<IPolicyService, PolicyService>();
         }
     }
 }

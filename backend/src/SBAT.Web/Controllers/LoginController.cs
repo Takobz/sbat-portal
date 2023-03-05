@@ -1,131 +1,81 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Interfaces;
+using SBAT.Infrastructure.Data.Repos;
 using SBAT.Infrastructure.Identity;
-using SBAT.Web.Helpers;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
+using SBAT.Web.SBATValidation;
+using SBAT.Web.Services;
+using SBAT.Web.Services.Common;
 
 namespace SBAT.Web.Controllers
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
-    public class LoginController : Controller
+    public class LoginController : SBATBaseController<LoginController>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenClaimsService _tokenClaimsService;
-        private readonly IValidationResolver _validatorResolver;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
         public LoginController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
             ITokenClaimsService tokenClaimsService,
-            IValidationResolver validatorResolver,
-            IMapper mapper)
+            IUserService userService)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _tokenClaimsService = tokenClaimsService ?? throw new ArgumentNullException(nameof(tokenClaimsService));
-            _validatorResolver = validatorResolver ?? throw new ArgumentNullException(nameof(validatorResolver));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        //TODO: Expect Hashed password from client.
-        //TODO: Move this logic into a seperate service i.e) ILoginService.cs
         [HttpPost]
         [AllowAnonymous]
+        [SBATValidation<RegisterUserRequest>]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest registerUser)
         {
-            var registerUserValidator = _validatorResolver.GetValidator<RegisterUserRequest>();
-            var validationErrors = registerUserValidator.ValidateModelAndGetErrorMessages(registerUser);
-            if (validationErrors != null && validationErrors.Any())
-            {
-                return BadRequest(new Response<EmptyResponse> { Errors = validationErrors });
-            }
-
-            var userName = $"{registerUser.IdentityType}-{registerUser.IdentityNumber}";
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user is not null)
+            var createUserResponse = await _userService.CreateUserAsync(registerUser);
+            if (createUserResponse.Code == Code.Conflict)
             {
                 return Conflict(new Response<EmptyResponse>
                 {
-                    Errors = new List<string> 
-                    { 
-                        $"User with Identity: {registerUser.IdentityNumber} and Identity Type: {registerUser.IdentityType} exits"
-                    }
+                    Errors = createUserResponse.Errors
                 });
             }
 
-            user = _mapper.Map<ApplicationUser>(registerUser);
-            IdentityResult identityResult = await _userManager.CreateAsync(user, registerUser.ConfirmPassword);
-            if (!identityResult.Succeeded)
-            {
-                //should I return Ok or am I doing too much work in one controller?
-                var identityErrors = identityResult.Errors.Select(err => err.Description).ToList();
-                return Ok(new Response<EmptyResponse>
-                {
-                    Data = new EmptyResponse(),
-                    Errors = identityErrors
-                });
-            }
-
-            user = await _userManager.FindByNameAsync(userName) ??
-                throw new ArgumentNullException($"Couldn't Find newly created user: {userName}");
-            var rolesResult = await _userManager.AddToRoleAsync(user, RolesConstants.User);
-            if (!rolesResult.Succeeded)
-            {
-                var roleErrors = rolesResult.Errors.Select(err => err.Description).ToList();
-                return Ok(new Response<EmptyResponse>
-                {
-                    Data = new EmptyResponse(),
-                    Errors = roleErrors
-                });
-            }
-
-            var createdUser = _mapper.Map<UserResponse>(user);
-            return Created($"login/{userName}", new Response<UserResponse> { Data = createdUser});
+            var createdUser = Mapper.Map<UserResponse>(createUserResponse.Response);
+            return Created($"login/{createdUser!.UserName}", new Response<UserResponse> { Data  = createdUser});
         }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("sign-in")]
+        [SBATValidation<SignInUserRequest>]
         public async Task<IActionResult> SignIn([FromBody] SignInUserRequest signInUser)
         {
-            var signInValidaor = _validatorResolver.GetValidator<SignInUserRequest>();
-            var validationErrors = signInValidaor.ValidateModelAndGetErrorMessages(signInUser);
-            if(validationErrors != null && validationErrors.Any())
-            {
-                return BadRequest(new Response<EmptyResponse>{ Errors = validationErrors });
-            }
+            // var signInResult = await _signInManager.PasswordSignInAsync(userName: signInUser.Username, password: signInUser.Password,
+            //      isPersistent: false, lockoutOnFailure: false);
+            // if(signInResult == null || !signInResult.Succeeded)
+            // {
+            //     return Unauthorized(new Response<EmptyResponse>
+            //     { 
+            //         Errors = new List<string> { $"User: {signInUser.Username} is not authorised, please check if password/username is correct" } 
+            //     });
+            // }
 
-            var signInResult = await _signInManager.PasswordSignInAsync(userName: signInUser.Username, password: signInUser.Password,
-                 isPersistent: false, lockoutOnFailure: false);
-            if(signInResult == null || !signInResult.Succeeded)
-            {
-                return Unauthorized(new Response<EmptyResponse>
-                { 
-                    Errors = new List<string> { $"User: {signInUser.Username} is not authorised, please check if password/username is correct" } 
-                });
-            }
+            // var userToken = await _tokenClaimsService.GetTokenAsync(signInUser.Username);
+            // var response = new SignInUserResponse 
+            // {
+            //     Username = signInUser.Username,
+            //     JwtToken = userToken
+            // };
 
-            var userToken = await _tokenClaimsService.GetTokenAsync(signInUser.Username);
-            var response = new SignInUserResponse 
-            {
-                Username = signInUser.Username,
-                JwtToken = userToken
-            };
-
-            return Ok(new Response<SignInUserResponse>
-            {
-                Data = response
-            });
+            // return Ok(new Response<SignInUserResponse>
+            // {
+            //     Data = response
+            // });
+            return Ok();
         }
 
-        //TODO: Add cookies for sign-in
+        //Continue Registration - In case some step(s) failed
     }
 }
