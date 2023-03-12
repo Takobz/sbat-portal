@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using SBAT.Infrastructure.Data.Repos;
 using SBAT.Infrastructure.Identity;
 using SBAT.Web.Models.Request;
@@ -46,6 +47,14 @@ namespace SBAT.Web.Services
             return CreateServiceResponse(user, Code.Success, new List<string>());
         }
 
+        public async Task<ServiceResponse<string>> SingInUserAsync(SignInUserRequest signInRequest)
+        {
+            var userToken = await _loginRepository.SignInUserPasswordAsync(signInRequest.Username, signInRequest.Password);
+
+            return (string.IsNullOrEmpty(userToken)) ? new ServiceResponse<string> { Code = Code.Unauthorized }
+                : new ServiceResponse<string> { Response = userToken, Code = Code.Success, Errors = new List<string>()};
+        }
+
         private ServiceResponse<ApplicationUser> CreateServiceResponse(ApplicationUser? user, Code code, List<string> errors)
         {
             return new ServiceResponse<ApplicationUser>
@@ -60,5 +69,6 @@ namespace SBAT.Web.Services
     public interface IUserService 
     {
         Task<ServiceResponse<ApplicationUser>> CreateUserAsync(RegisterUserRequest userRequest);
+        Task<ServiceResponse<string>> SingInUserAsync(SignInUserRequest signInRequest);
     }
 }

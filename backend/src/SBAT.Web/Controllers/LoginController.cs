@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Interfaces;
-using SBAT.Infrastructure.Data.Repos;
-using SBAT.Infrastructure.Identity;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
 using SBAT.Web.SBATValidation;
@@ -52,30 +49,17 @@ namespace SBAT.Web.Controllers
         [SBATValidation<SignInUserRequest>]
         public async Task<IActionResult> SignIn([FromBody] SignInUserRequest signInUser)
         {
-            // var signInResult = await _signInManager.PasswordSignInAsync(userName: signInUser.Username, password: signInUser.Password,
-            //      isPersistent: false, lockoutOnFailure: false);
-            // if(signInResult == null || !signInResult.Succeeded)
-            // {
-            //     return Unauthorized(new Response<EmptyResponse>
-            //     { 
-            //         Errors = new List<string> { $"User: {signInUser.Username} is not authorised, please check if password/username is correct" } 
-            //     });
-            // }
+            var tokenResponse = await _userService.SingInUserAsync(signInUser);
 
-            // var userToken = await _tokenClaimsService.GetTokenAsync(signInUser.Username);
-            // var response = new SignInUserResponse 
-            // {
-            //     Username = signInUser.Username,
-            //     JwtToken = userToken
-            // };
+            if (string.IsNullOrEmpty(tokenResponse.Response))
+                return Unauthorized();
 
-            // return Ok(new Response<SignInUserResponse>
-            // {
-            //     Data = response
-            // });
-            return Ok();
+            return Ok(new Response<SignInUserResponse>
+            {
+                Data = new SignInUserResponse { Username = signInUser.Username, JwtToken = tokenResponse.Response }
+            });
         }
 
-        //Continue Registration - In case some step(s) failed
+        //TODO: Continue Registration - In case some step(s) failed
     }
 }

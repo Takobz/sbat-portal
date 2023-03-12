@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Identity;
 
 namespace SBAT.Infrastructure.Data.Repos
@@ -8,15 +9,18 @@ namespace SBAT.Infrastructure.Data.Repos
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ITokenClaimsService _tokenService;
         private readonly ILogger<LoginRepository> _logger;
 
         public LoginRepository(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            ITokenClaimsService tokenService,
             ILogger<LoginRepository> logger)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -61,6 +65,21 @@ namespace SBAT.Infrastructure.Data.Repos
 
             return true;
         }
+
+        public async Task<string> SignInUserPasswordAsync(string username, string password)
+        {
+            var signInResult = await _signInManager.PasswordSignInAsync(username, password,
+             isPersistent: false, lockoutOnFailure: false);
+
+            if (signInResult is null || !signInResult.Succeeded)
+            {
+                _logger.LogWarning($"User: {username} failed to sign in");
+                return string.Empty;
+            } 
+
+            _logger.LogInformation($"{username} signed in successfully returning token");
+            return await _tokenService.GetTokenAsync(username) ?? string.Empty;
+        }
     }
 
     public interface ILoginRepository 
@@ -68,5 +87,6 @@ namespace SBAT.Infrastructure.Data.Repos
         Task<ApplicationUser?> GetUserByNameAsync(string username);
         Task<ApplicationUser?> CreateUserAsync(ApplicationUser user, string password);
         Task<bool> AddedUserRoleAsync(ApplicationUser user, string role);
+        Task<string> SignInUserPasswordAsync(string username, string password);
     }
 }

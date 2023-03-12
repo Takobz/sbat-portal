@@ -16,6 +16,7 @@ namespace SBAT.Web.Services.Common
         BadRequest,
         NotFound,
         ServerError,
-        UpdateFail
+        UpdateFail,
+        Unauthorized
     }
 }
