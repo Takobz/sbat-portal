@@ -1,6 +1,6 @@
 namespace SBAT.Web.Models.Response
 {
-    public class EmptyResponse 
+    public class EmptyResponse : BaseDTO
     {
         
     }

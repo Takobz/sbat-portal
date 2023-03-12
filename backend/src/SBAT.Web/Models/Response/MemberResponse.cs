@@ -1,6 +1,6 @@
 namespace SBAT.Web.Models.Response
 {
-    public class MemberResponse 
+    public class MemberResponse : BaseDTO
     {
         public string FirstNames { get; private set; } = string.Empty;
         public string Surname { get; private set; } = string.Empty;

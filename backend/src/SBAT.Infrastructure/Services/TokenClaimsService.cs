@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SBAT.Core.Interfaces;
+using SBAT.Infrastructure.Identity;
 
-namespace SBAT.Infrastructure.Identity
+namespace SBAT.Infrastructure.Services
 {
     public class TokenClaimsService : ITokenClaimsService
     {

@@ -3,13 +3,13 @@ using SBAT.Core.Enums;
 
 namespace SBAT.Web.Models.Request
 {
-    public class CreatePolicyRequest
+    public class CreatePolicyRequest : BaseDTO
     {
         public string MainMemberUserName { get; set; } = string.Empty;
         public MemberRequest MainMember { get; set; } = new MemberRequest();
     }
 
-    public class MemberRequest 
+    public class MemberRequest : BaseDTO
     {
         public string FirstNames { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
@@ -24,5 +24,6 @@ namespace SBAT.Web.Models.Request
         public string SuburbOrTownLine { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = Countries.SA;
+        public PolicyType PolicyType { get; set; } = PolicyType.Normal;
     }
 }

@@ -48,8 +48,6 @@ namespace SBAT.Web.ServiceCollection
             services.AddTransient<IValidator<SignInUserRequest>, SignInUserRequestValidation>();
             services.AddTransient<IValidator<CreatePolicyRequest>, CreatePolicyRequestValidation>();
             services.AddTransient<IValidator<MemberRequest>, MemberRequestValidation>();
-
-            services.AddTransient<IValidationResolver, ValidationResolver>();
         }
     }
 }

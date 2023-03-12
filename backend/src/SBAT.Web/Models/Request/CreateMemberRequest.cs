@@ -3,7 +3,7 @@ using SBAT.Core.Enums;
 
 namespace SBAT.Web.Models.Request
 {
-    public class CreateMemberRequest
+    public class CreateMemberRequest : BaseDTO
     {
         public string FirstNames { get; private set; } = string.Empty;
         public string Surname { get; private set; } = string.Empty;

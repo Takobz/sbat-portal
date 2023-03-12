@@ -9,14 +9,14 @@ namespace SBAT.Core.Entities
         public string PrincipalMemberUserName { get; private set; }
         public string PolicyNumber { get; private set; }
         public IEnumerable<Member> Members { get; private set; }
+        public PolicyType Type { get; private set; }
 
-        //handle this in mapper?
-        public void CreateMainMember(string userName)
+        public void AddMainMember(string userName)
         {
             PrincipalMemberUserName = userName;
         }
 
-        public void CreatePolicyNumber(string policyNumber)
+        public void AddPolicyNumber(string policyNumber)
         {
             PolicyNumber = policyNumber;
         }
