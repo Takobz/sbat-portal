@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Entities;
-using SBAT.Core.Interfaces;
 using SBAT.Infrastructure.Identity;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
 using SBAT.Web.SBATValidation;
 using SBAT.Web.Services;
+using SBAT.Web.Services.Common;
 
 namespace SBAT.Web.Controllers
 {
@@ -32,44 +32,29 @@ namespace SBAT.Web.Controllers
         [SBATValidation<CreatePolicyRequest>]
         public async Task<IActionResult> CreatePolicyMemeberShip([FromBody] CreatePolicyRequest createPolicy)
         {
-            // var policy = Mapper.Map<Policy>(createPolicy);
-            // var user = await _userService.GetUserByUsernameAsync(createPolicy.MainMemberUserName);
-            // if (user is null)
-            // {
-            //     return BadRequest(new Response<EmptyResponse>
-            //     { Errors = new List<string> { $"Couldn't get user with username: {createPolicy.MainMemberUserName}" } });
-            // }
-            // await _userService.AddedUserRoleAsync(user, RolesConstants.MainMemeber);
+            //TODO: Check AssignUserRole response code etc.
+            var policy = Mapper.Map<Policy>(createPolicy);
+            await _userService.AssignUserRoleAsync(createPolicy.MainMemberUserName, RolesConstants.MainMemeber);
 
-            // var createdPolicy = _policyService.CreatePolicy(policy);
-            // var createdPolicyResponse = Mapper.Map<CreatePolicyResponse>(createdPolicy);
-            // return Ok(new Response<CreatePolicyResponse> { Data = createdPolicyResponse});
+            var policyResponse = _policyService.CreatePolicy(policy);
+            if (policyResponse.Code == Code.Conflict)
+                return Conflict(new Response<EmptyResponse> { Errors  = policyResponse.Errors });
 
-            return Ok();
+            if(policyResponse.Response == null)
+                return Conflict();
+
+            return Ok(new Response<CreatePolicyResponse> { Data = policyResponse.Response });
         }
 
         [HttpGet("memberships/{principalMemberUsercode}")]
         [Authorize(Policy = RolesConstants.MainMemeber)]
         public IActionResult GetMemberPolicies(string principalMemberUsercode)
         {
-            // if (string.IsNullOrEmpty(principalMemberUsercode))
-            // {
-            //     return BadRequest();
-            // }
+            var userPoliciesResponse = _policyService.GetMemeberPolicies(principalMemberUsercode);
+            if (userPoliciesResponse.Response == null || !userPoliciesResponse.Response.Any())
+                return NotFound();
 
-            // //include memebers on call!
-            // var userPolicies = _policyService.GetUserPolicies(principalMemberUsercode);
-            // if (userPolicies == null || !userPolicies.Any())
-            // {
-            //     return NotFound();
-            // }
-
-            // var userPoliciesResponse = userPolicies
-            //     .Select(pol => Mapper.Map<GetPolicyResponse>(pol))
-            //     .ToList();
-
-            // return Ok(new Response<ICollection<GetPolicyResponse>> { Data = userPoliciesResponse });
-            return Ok();
+            return Ok(new Response<ICollection<GetPolicyResponse>> { Data = userPoliciesResponse.Response });
         }
 
         // [HttpPut]
