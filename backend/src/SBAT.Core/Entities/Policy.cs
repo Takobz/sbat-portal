@@ -1,5 +1,4 @@
 using SBAT.Core.Enums;
-using SBAT.Core.Interfaces;
 
 namespace SBAT.Core.Entities
 {
@@ -19,6 +18,14 @@ namespace SBAT.Core.Entities
         public void AddPolicyNumber(string policyNumber)
         {
             PolicyNumber = policyNumber;
+        }
+
+        public void AddMember(Member member)
+        {
+            if (Members is not null)
+                Members = Members.Append(member); 
+
+           Members = new List<Member>() { member };
         }
     }
 }

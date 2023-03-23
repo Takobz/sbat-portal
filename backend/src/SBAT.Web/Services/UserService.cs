@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using SBAT.Infrastructure.Data.Repos;
 using SBAT.Infrastructure.Identity;
 using SBAT.Web.Models.Request;
@@ -12,9 +11,7 @@ namespace SBAT.Web.Services
         private readonly ILoginRepository _loginRepository;
         private readonly IMapper _mapper;
         
-        public UserService(
-            ILoginRepository loginRepository,
-            IMapper mapper)
+        public UserService(ILoginRepository loginRepository, IMapper mapper)
         {
             _loginRepository = loginRepository ?? throw new ArgumentNullException(nameof(loginRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -27,7 +24,7 @@ namespace SBAT.Web.Services
             if (user is not null)
             {
                 var errors = new List<string>() { "User Already Exists" };
-                return CreateServiceResponse(default, Code.Conflict, errors);
+                return ServiceResponse<ApplicationUser>.CreateServiceResponse(default, Code.Conflict, errors);
             }
 
             user = _mapper.Map<ApplicationUser>(userRequest);
@@ -35,16 +32,16 @@ namespace SBAT.Web.Services
             if (user is null)
             {
                 var errors = new List<string>() { "Failed to create user" };
-                return CreateServiceResponse(default, Code.Conflict, errors);
+                return ServiceResponse<ApplicationUser>.CreateServiceResponse(default, Code.Conflict, errors);
             }
 
             if (!(await _loginRepository.AddedUserRoleAsync(user, RolesConstants.User)))
             {
                 var errors = new List<string>() { "Failed to add user role" };
-                return CreateServiceResponse(default, Code.UpdateFail, errors);
+                return ServiceResponse<ApplicationUser>.CreateServiceResponse(default, Code.UpdateFail, errors);
             }
 
-            return CreateServiceResponse(user, Code.Success, new List<string>());
+            return ServiceResponse<ApplicationUser>.CreateServiceResponse(user, Code.Success, new List<string>());
         }
 
         public async Task<ServiceResponse<string>> SingInUserAsync(SignInUserRequest signInRequest)
@@ -55,14 +52,22 @@ namespace SBAT.Web.Services
                 : new ServiceResponse<string> { Response = userToken, Code = Code.Success, Errors = new List<string>()};
         }
 
-        private ServiceResponse<ApplicationUser> CreateServiceResponse(ApplicationUser? user, Code code, List<string> errors)
+        public async Task<ServiceResponse<EmptyServiceResponse>> AssignUserRoleAsync(string username, string role)
         {
-            return new ServiceResponse<ApplicationUser>
+            var user = await _loginRepository.GetUserByNameAsync(username);
+            if (user is null)
             {
-                Code = code,
-                Response = user,
-                Errors = errors
-            };
+                var errors = new List<string> { $"Username: {username} doesn't exist." };
+                return ServiceResponse<EmptyServiceResponse>.CreateServiceResponse(new (), Code.BadRequest, errors);
+            }
+
+            if (!await _loginRepository.AddedUserRoleAsync(user, role))
+            {
+                var errors = new List<string> { $"Failed to add role: {role}." };
+                return ServiceResponse<EmptyServiceResponse>.CreateServiceResponse(new (), Code.Conflict, errors);
+            }
+
+            return ServiceResponse<EmptyServiceResponse>.CreateServiceResponse(new (), Code.Success, new List<string>());   
         }
     }
 
@@ -70,5 +75,6 @@ namespace SBAT.Web.Services
     {
         Task<ServiceResponse<ApplicationUser>> CreateUserAsync(RegisterUserRequest userRequest);
         Task<ServiceResponse<string>> SingInUserAsync(SignInUserRequest signInRequest);
+        Task<ServiceResponse<EmptyServiceResponse>> AssignUserRoleAsync(string username, string role);
     }
 }

@@ -29,10 +29,18 @@ namespace SBAT.Infrastructure.Data.Repos
                 .AsEnumerable();
         }
 
-        public IEnumerable<Policy> GetPolicies(PolicyType policyType)
+        public Policy? GetPolicy(string policyNumber)
         {
-            return _iSbatDbContext.Policies.Where(p => p.Type == policyType)
-                .AsEnumerable();
+            return _iSbatDbContext.Policies.FirstOrDefault(p => p.PolicyNumber == policyNumber);
+        }
+
+        public void AddMember(string policyNumber, Member member)
+        {
+            var policy = _iSbatDbContext.Policies.FirstOrDefault(p => p.PolicyNumber == policyNumber);
+            if (policy is not null)
+                policy.AddMember(member);
+
+            _iSbatDbContext.Save();
         }
 
         private string GeneratePolicyNumber(PolicyType policyType)
@@ -49,6 +57,7 @@ namespace SBAT.Infrastructure.Data.Repos
     {
         IEnumerable<Policy> GetPolicies(string username);
         Policy? CreatePolicy(Policy policy);
-        IEnumerable<Policy> GetPolicies(PolicyType policyType);
+        Policy? GetPolicy(string policyNumber);
+        void AddMember(string policyNumber, Member member);
     }
 }

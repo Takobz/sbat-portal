@@ -5,6 +5,7 @@ using SBAT.Infrastructure.Identity;
 using SBAT.Web.Helpers;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
+using SBAT.Web.Services;
 using SBAT.Web.Validations;
 
 namespace SBAT.Web.ServiceCollection
@@ -32,13 +33,15 @@ namespace SBAT.Web.ServiceCollection
                 cfg.CreateMap<Member, MemberResponse>();
                 cfg.CreateMap<Policy, CreatePolicyResponse>();
                 cfg.CreateMap<Policy, GetPolicyResponse>();
+                cfg.CreateMap<CreateMemberRequest, Member>();
                 #endregion
             }).CreateMapper());
         }
         
         public static void AddServices(this IServiceCollection services)
         {
-            //to be implemented
+            services.AddTransient<IPolicyService, PolicyService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         public static void AddModelValidations(this IServiceCollection services)
@@ -48,6 +51,7 @@ namespace SBAT.Web.ServiceCollection
             services.AddTransient<IValidator<SignInUserRequest>, SignInUserRequestValidation>();
             services.AddTransient<IValidator<CreatePolicyRequest>, CreatePolicyRequestValidation>();
             services.AddTransient<IValidator<MemberRequest>, MemberRequestValidation>();
+            services.AddTransient<IValidator<CreateMemberRequest>, CreateMemberRequestValidation>();
         }
     }
 }
