@@ -31,4 +31,22 @@ namespace SBAT.Web.Validations
                 .NotNull();
         }
     }
+
+    public class CreateMemberRequestValidation : AbstractValidator<CreateMemberRequest>
+    {
+        public CreateMemberRequestValidation()
+        {
+            RuleFor(m => m.FirstNames).NotEmpty();
+            RuleFor(m => m.Surname).NotEmpty();
+            RuleFor(m => m.IdentityNumber).NotEmpty();
+            RuleFor(m => m.Cellphone).NotEmpty();
+            RuleFor(m => m.IdentityType).IsInEnum();
+            RuleFor(m => m.DateOfBirth).NotNull();
+            RuleFor(m => m.StreetLine).NotEmpty();
+            RuleFor(m => m.City).NotEmpty();
+            RuleFor(m => m.Country).NotEmpty();
+            RuleFor(m => m.Relationship).IsInEnum();
+            RuleFor(m => m.SuburbOrTownLine).NotEmpty();
+        }
+    }
 }

@@ -12,7 +12,7 @@ namespace SBAT.Web.Controllers
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    [Route("[controller]")]
+    [Route("api")]
     public class PolicyController : SBATBaseController<PolicyController>
     {
         private readonly IPolicyService _policyService;
@@ -46,22 +46,39 @@ namespace SBAT.Web.Controllers
             return Ok(new Response<CreatePolicyResponse> { Data = policyResponse.Response });
         }
 
-        [HttpGet("memberships/{principalMemberUsercode}")]
+        [HttpGet("policy/{policyNumber}")]
+        [Authorize(Policy = RolesConstants.MainMemeber)]
+        public IActionResult AddMemeberToPolicy(string policyNumber)
+        {
+            //TODO: Make sure they are main member for this policy
+            var responsePolicy = _policyService.GetPolicy(policyNumber.ToUpper());
+            if (responsePolicy.Code == Code.NotFound || responsePolicy.Response == default)
+                return NotFound(new Response<EmptyResponse> { Errors = responsePolicy.Errors });
+
+            return Ok(new Response<GetPolicyResponse> { Data = responsePolicy.Response } );
+        }
+
+        [HttpGet("policy/all/{principalMemberUsercode}")]
         [Authorize(Policy = RolesConstants.MainMemeber)]
         public IActionResult GetMemberPolicies(string principalMemberUsercode)
         {
             var userPoliciesResponse = _policyService.GetMemeberPolicies(principalMemberUsercode);
             if (userPoliciesResponse.Response == null || !userPoliciesResponse.Response.Any())
-                return NotFound();
+                return NotFound(new Response<EmptyResponse> { Errors = userPoliciesResponse.Errors });
 
             return Ok(new Response<ICollection<GetPolicyResponse>> { Data = userPoliciesResponse.Response });
         }
 
-        // [HttpPut]
-        // [Authorize(Policy = RolesConstants.MainMemeber)]
-        // public IActionResult AddMemeberToPolicy([FromBody] CreateMemberRequest createMember)
-        // {
-
-        // }
+        [HttpPut("policy/{policyNumber}")]
+        [Authorize(Policy = RolesConstants.MainMemeber)]
+        [SBATValidation<CreateMemberRequest>]
+        public IActionResult AddMemeberToPolicy(string policyNumber, [FromBody] CreateMemberRequest createMember)
+        {
+            var responsePolicy = _policyService.AddMemeberToPolicy(policyNumber.ToUpper(), createMember);
+            if (responsePolicy.Code == Code.NotFound || responsePolicy.Response == null)
+                return NotFound(new Response<EmptyResponse> { Errors = responsePolicy.Errors });
+            
+            return Ok(new Response<GetPolicyResponse> { Data = responsePolicy.Response });
+        }
     }
 }
