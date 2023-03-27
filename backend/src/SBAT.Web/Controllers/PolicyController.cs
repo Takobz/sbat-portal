@@ -28,7 +28,7 @@ namespace SBAT.Web.Controllers
 
         [HttpPost]
         [Authorize(Policy = RolesConstants.User)]
-        [Route("create")]
+        [Route("policy/create")]
         [SBATValidation<CreatePolicyRequest>]
         public async Task<IActionResult> CreatePolicyMemeberShip([FromBody] CreatePolicyRequest createPolicy)
         {

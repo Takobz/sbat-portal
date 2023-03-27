@@ -16,7 +16,7 @@ const loginUser: ISbatApiService = async (loginRequest: UserLoginRequest) => {
 
   return await sbatApi
     .post<UserLoginRequest, AxiosResponse<Response<UserLoginResponse>>>(
-      "login/sign-in",
+      "api/login/sign-in",
       loginRequest,
       {
         headers: {
@@ -26,7 +26,7 @@ const loginUser: ISbatApiService = async (loginRequest: UserLoginRequest) => {
     )
     .then((response) => {
       var apiResponse = response.data;
-      if (response.status === 200 && !apiResponse.errors)
+      if (response.status === 200 && apiResponse.errors.length === 0)
         return apiResponse.data;
 
       throw new Error(apiResponse.errors.join(";"));

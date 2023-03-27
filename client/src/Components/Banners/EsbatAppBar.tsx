@@ -45,7 +45,6 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
       });
       setLoggedInUser(result); //TODO: route to appropriarte page with data
     } catch (e) {
-      //inform user in some way we have an err
       console.log(e);
     }
   };

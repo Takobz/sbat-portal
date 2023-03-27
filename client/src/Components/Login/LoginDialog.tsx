@@ -37,7 +37,7 @@ const LoginDialog = (props: LoginDialogProps) => {
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>Sign In</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
+        <Grid container>
           <Grid item xs={12}>
             <Grid container justifyContent="center" alignItems="center">
               <TextField
@@ -45,6 +45,7 @@ const LoginDialog = (props: LoginDialogProps) => {
                 label="Username"
                 variant="outlined"
                 onChange={(e) => onUsernameChange(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>
@@ -56,6 +57,7 @@ const LoginDialog = (props: LoginDialogProps) => {
                 variant="outlined"
                 type="password"
                 onChange={(e) => onPasswordChange(e.target.value)}
+                margin="normal"
               />
             </Grid>
           </Grid>
