@@ -14,18 +14,16 @@ import { useState } from "react";
 import UserLoginResponse from "../../Models/SbatApi/Response/UserLoginResponse";
 import UserLoginRequest from "../../Models/SbatApi/Request/UserLoginRequest";
 import LoginUser from "../../Services/SbatApiService";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 type AppBarProps = {
   label: string;
 };
 
 const EsbatAppBar = ({ label }: AppBarProps) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [isUserAuthd, setIsUserAuthd] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<UserLoginResponse>(
-    {} as UserLoginResponse
-  );
 
   const handleOpen = () => {
     setOpen((prevOpen) => {
@@ -43,7 +41,12 @@ const EsbatAppBar = ({ label }: AppBarProps) => {
         username: loginUser.username,
         password: loginUser.password,
       });
-      setLoggedInUser(result); //TODO: route to appropriarte page with data
+
+      if(result){
+        navigate(`/users/${result.username}`);
+      }else{
+        //show unauth'd pop-up
+      }
     } catch (e) {
       console.log(e);
     }

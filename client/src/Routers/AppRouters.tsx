@@ -11,7 +11,7 @@ const createAppRouters = ()  => {
       errorElement: <ErrorPrompt />,
       children: [
         {
-          path: '/users/:userId',
+          path: '/users/:username',
           element: <UserOverviewPage/>,
           errorElement: <ErrorPrompt />
         }
