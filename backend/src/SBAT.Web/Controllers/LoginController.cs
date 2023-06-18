@@ -11,7 +11,7 @@ namespace SBAT.Web.Controllers
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    [Route("[controller]")]
+    [Route("api")]
     public class LoginController : SBATBaseController<LoginController>
     {
         private readonly ITokenClaimsService _tokenClaimsService;
@@ -28,6 +28,7 @@ namespace SBAT.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [SBATValidation<RegisterUserRequest>]
+        [Route("login/register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest registerUser)
         {
             var createUserResponse = await _userService.CreateUserAsync(registerUser);
@@ -45,7 +46,7 @@ namespace SBAT.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("sign-in")]
+        [Route("login/sign-in")]
         [SBATValidation<SignInUserRequest>]
         public async Task<IActionResult> SignIn([FromBody] SignInUserRequest signInUser)
         {
