@@ -12,7 +12,7 @@ namespace SBAT.App.ServiceCollection
             return services;
         }
 
-        public static IServiceCollection AddSBATAppServices(this IServiceCollection services, IConfiguration configuration) 
+        public static IServiceCollection AddSBATAppServices(this IServiceCollection services) 
         {
             services.AddTransient<ISBATApiService, SBATApiService>();
             return services;

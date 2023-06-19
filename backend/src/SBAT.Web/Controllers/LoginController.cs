@@ -14,14 +14,10 @@ namespace SBAT.Web.Controllers
     [Route("api")]
     public class LoginController : SBATBaseController<LoginController>
     {
-        private readonly ITokenClaimsService _tokenClaimsService;
         private readonly IUserService _userService;
 
-        public LoginController(
-            ITokenClaimsService tokenClaimsService,
-            IUserService userService)
+        public LoginController(IUserService userService)
         {
-            _tokenClaimsService = tokenClaimsService ?? throw new ArgumentNullException(nameof(tokenClaimsService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 

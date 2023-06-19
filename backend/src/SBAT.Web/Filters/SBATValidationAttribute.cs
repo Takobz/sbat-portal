@@ -4,6 +4,7 @@ using SBAT.Web.Models;
 
 namespace SBAT.Web.SBATValidation 
 {
+    [AttributeUsage(AttributeTargets.All)]
     public class SBATValidationAttribute<T> : Attribute, IAsyncActionFilter where T : BaseDTO
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
