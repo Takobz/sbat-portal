@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SBAT.Core.Interfaces;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
 using SBAT.Web.SBATValidation;

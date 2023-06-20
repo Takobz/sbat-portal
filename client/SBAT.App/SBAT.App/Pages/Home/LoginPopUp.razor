@@ -4,28 +4,28 @@
 @inject ILogger<LoginPopUp> Logger
 @inject ISBATApiService SBATApiService
 
-<div class="modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+<div id="login-pop-up" class="modal" tabindex="-1" aria-hidden="true" aria-labelledby="login-pop-up-label">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5>Sign In</h5>
+                <h5 class="modal-title" id="login-pop-up-label">Sign In</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <EditForm Model="@loginModel" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="sign-in-input" class="col-form-label">Username:</label>
-                        <InputText id="sign-in-input" @bind-Value="loginModel.Username"></InputText>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sign-in-pass" class="col-form-label">Username:</label>
-                        <InputText id="sign-in-pass" @bind-Value="loginModel.Password"></InputText>
-                    </div>
+            
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="sign-in-input" class="col-form-label">Username:</label>
+                    <InputText id="sign-in-input" @bind-Value="loginModel.Username"></InputText>
                 </div>
+                <div class="mb-3">
+                    <label for="sign-in-pass" class="col-form-label">Username:</label>
+                    <InputText id="sign-in-pass" @bind-Value="loginModel.Password"></InputText>
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-            </EditForm>
+            
         </div>
     </div>
 </div>
@@ -41,15 +41,15 @@
             Password = loginModel.Password
         };
 
-        var apiResponse = await SBATApiService.SignInUserAsync(signInRequest);
-        if (apiResponse is not null)
-        {
-            //go to the home page
-        }
-        else
-        {
-            //check for errors!
-        }
+        //var apiResponse = await SBATApiService.SignInUserAsync(signInRequest);
+        //if (apiResponse is not null)
+        //{
+        //    //go to the home page
+        //}
+        //else
+        //{
+        //    //check for errors!
+        //}
     }
 
     private void HandleInvalidSubmit()
