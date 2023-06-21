@@ -37,7 +37,7 @@ builder.Services.AddModelValidations();
 //Add more specific cors policies.
 builder.Services.AddCors(options =>  {
     options.AddPolicy(_allowAll, builder => {
-        builder.AllowAnyOrigin();
+        builder.WithOrigins("https://localhost:5003", "http://localhost:5003");
         builder.AllowAnyHeader();
         builder.AllowAnyMethod();
     });

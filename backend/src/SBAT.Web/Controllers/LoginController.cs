@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
@@ -43,6 +44,7 @@ namespace SBAT.Web.Controllers
         [AllowAnonymous]
         [Route("login/sign-in")]
         [SBATValidation<SignInUserRequest>]
+        [EnableCors("freeForAll")]
         public async Task<IActionResult> SignIn([FromBody] SignInUserRequest signInUser)
         {
             var tokenResponse = await _userService.SingInUserAsync(signInUser);

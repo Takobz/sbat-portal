@@ -5,35 +5,36 @@
 @inject ISBATApiService SBATApiService
 
 <div id="login-pop-up" class="modal" tabindex="-1" aria-hidden="true" aria-labelledby="login-pop-up-label">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="login-pop-up-label">Sign In</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
+
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="sign-in-input" class="col-form-label">Username:</label>
-                    <InputText id="sign-in-input" @bind-Value="loginModel.Username"></InputText>
+                    <label for="sign-in-input" class="col-form-label" @bind="loginModel.Username">Username:</label>
+                    <input id="sign-in-input" />
                 </div>
                 <div class="mb-3">
-                    <label for="sign-in-pass" class="col-form-label">Username:</label>
-                    <InputText id="sign-in-pass" @bind-Value="loginModel.Password"></InputText>
+                    <label for="sign-in-pass" class="col-form-label" @bind="loginModel.Password">Password:</label>
+                    <input type="password" id="sign-in-pass" />
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" @onclick="HandleSubmit">Submit</button>
             </div>
-            
+
         </div>
     </div>
 </div>
 
 @code {
     private LoginModel loginModel = new();
+    private bool isSuccessLogin = false;
 
-    private async Task HandleValidSubmit()
+    private async Task HandleSubmit()
     {
         var signInRequest = new SignInUserRequest
         {
@@ -41,19 +42,14 @@
             Password = loginModel.Password
         };
 
-        //var apiResponse = await SBATApiService.SignInUserAsync(signInRequest);
-        //if (apiResponse is not null)
-        //{
-        //    //go to the home page
-        //}
-        //else
-        //{
-        //    //check for errors!
-        //}
-    }
-
-    private void HandleInvalidSubmit()
-    {
-
+        var apiResponse = await SBATApiService.SignInUserAsync(signInRequest);
+        if (apiResponse is not null)
+        {
+            isSuccessLogin = true;
+        }
+        else
+        {
+            //check for errors!
+        }
     }
 }
