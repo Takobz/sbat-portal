@@ -1,9 +1,9 @@
 using AutoMapper;
 using SBAT.Core.Entities;
 using SBAT.Infrastructure.Data.Repos;
+using SBAT.Web.Models.Common;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
-using SBAT.Web.Services.Common;
 
 namespace SBAT.Web.Services
 {
@@ -24,28 +24,28 @@ namespace SBAT.Web.Services
             if (createdPolicy == null)
             {
                 var errors = new List<string>() { $"Failed to create policy" };
-                return ServiceResponse<CreatePolicyResponse>.CreateServiceResponse(default, Code.Conflict, errors);
+                return ServiceResponse<CreatePolicyResponse>.CreateServiceResponse(default, ResponseCode.Conflict, errors);
             }
 
             var policyResponse = _mapper.Map<CreatePolicyResponse>(createdPolicy);    
-            return ServiceResponse<CreatePolicyResponse>.CreateServiceResponse(policyResponse, Code.Success, new List<string>());
+            return ServiceResponse<CreatePolicyResponse>.CreateServiceResponse(policyResponse, ResponseCode.Success, new List<string>());
         }
 
         public ServiceResponse<ICollection<GetPolicyResponse>> GetMemeberPolicies(string principalUsername)
         {
             var userPolicies = _policyRepository.GetPolicies(principalUsername);
             var userPoliciesResponse = userPolicies.Select(p => _mapper.Map<GetPolicyResponse>(p));
-            return ServiceResponse<ICollection<GetPolicyResponse>>.CreateServiceResponse(userPoliciesResponse.ToList(), Code.Success, new List<string>());
+            return ServiceResponse<ICollection<GetPolicyResponse>>.CreateServiceResponse(userPoliciesResponse.ToList(), ResponseCode.Success, new List<string>());
         }
 
         public ServiceResponse<GetPolicyResponse> GetPolicy(string policyNumber)
         {
             var policy = _policyRepository.GetPolicy(policyNumber);
             if (policy is null)
-                return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(default, Code.NotFound, new List<string>());
+                return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(default, ResponseCode.NotFound, new List<string>());
 
             var response = _mapper.Map<GetPolicyResponse>(policy);
-            return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(response, Code.Success, new List<string>());
+            return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(response, ResponseCode.Success, new List<string>());
         }
 
         public ServiceResponse<GetPolicyResponse> AddMemeberToPolicy(string policyNumber, CreateMemberRequest createMember)
@@ -54,7 +54,7 @@ namespace SBAT.Web.Services
             if (policy is null)
             {
                 var errors = new List<string>() { $"Couldn't find policy: {policyNumber}" }; 
-                return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(default, Code.NotFound, new List<string>());
+                return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(default, ResponseCode.NotFound, new List<string>());
             }
 
             var memeber = _mapper.Map<Member>(createMember);
@@ -62,7 +62,7 @@ namespace SBAT.Web.Services
 
             policy = _policyRepository.GetPolicy(policyNumber);
             var responsePolicy = _mapper.Map<GetPolicyResponse>(policy);
-            return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(responsePolicy, Code.Success, new List<string>());
+            return ServiceResponse<GetPolicyResponse>.CreateServiceResponse(responsePolicy, ResponseCode.Success, new List<string>());
         }
     }
 

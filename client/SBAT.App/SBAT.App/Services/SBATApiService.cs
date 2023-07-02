@@ -4,6 +4,8 @@ using SBAT.App.Models.SBATApi.Constants;
 using SBAT.App.Models.SBATApi.Request;
 using SBAT.App.Models.SBATApi.Response;
 using SBAT.App.Models.Settings;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace SBAT.App.Services
@@ -22,14 +24,15 @@ namespace SBAT.App.Services
         {
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri(options.Value.BaseUri);
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = false };
         }
 
         public async Task<SBATResponse<SignInUserResponse>> SignInUserAsync(SignInUserRequest signInUserRequest)
         {
-            var response = await _httpClient.GetAsync(SBATApiUrls.signInUserPath);
+            var response = await _httpClient.PostAsJsonAsync(SBATApiUrls.signInUserPath, signInUserRequest, _jsonSerializerOptions);
             //TODO: Propagate this exception to be handled by a common exception handler!
-            return JsonSerializer.Deserialize<SBATResponse<SignInUserResponse>>(await response.Content.ReadAsStringAsync());
+            return JsonSerializer.Deserialize<SBATResponse<SignInUserResponse>>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions);
         }
     }
 }

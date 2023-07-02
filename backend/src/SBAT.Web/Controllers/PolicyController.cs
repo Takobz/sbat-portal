@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SBAT.Core.Entities;
 using SBAT.Infrastructure.Identity;
+using SBAT.Web.Models.Common;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
 using SBAT.Web.SBATValidation;
 using SBAT.Web.Services;
-using SBAT.Web.Services.Common;
 
 namespace SBAT.Web.Controllers
 {
@@ -37,7 +37,7 @@ namespace SBAT.Web.Controllers
             await _userService.AssignUserRoleAsync(createPolicy.MainMemberUserName, RolesConstants.MainMemeber);
 
             var policyResponse = _policyService.CreatePolicy(policy);
-            if (policyResponse.Code == Code.Conflict)
+            if (policyResponse.Code == ResponseCode.Conflict)
                 return Conflict(new Response<EmptyResponse> { Errors  = policyResponse.Errors });
 
             if(policyResponse.Response == null)
@@ -52,7 +52,7 @@ namespace SBAT.Web.Controllers
         {
             //TODO: Make sure they are main member for this policy
             var responsePolicy = _policyService.GetPolicy(policyNumber.ToUpper());
-            if (responsePolicy.Code == Code.NotFound || responsePolicy.Response == default)
+            if (responsePolicy.Code == ResponseCode.NotFound || responsePolicy.Response == default)
                 return NotFound(new Response<EmptyResponse> { Errors = responsePolicy.Errors });
 
             return Ok(new Response<GetPolicyResponse> { Data = responsePolicy.Response } );
@@ -75,7 +75,7 @@ namespace SBAT.Web.Controllers
         public IActionResult AddMemeberToPolicy(string policyNumber, [FromBody] CreateMemberRequest createMember)
         {
             var responsePolicy = _policyService.AddMemeberToPolicy(policyNumber.ToUpper(), createMember);
-            if (responsePolicy.Code == Code.NotFound || responsePolicy.Response == null)
+            if (responsePolicy.Code == ResponseCode.NotFound || responsePolicy.Response == null)
                 return NotFound(new Response<EmptyResponse> { Errors = responsePolicy.Errors });
             
             return Ok(new Response<GetPolicyResponse> { Data = responsePolicy.Response });

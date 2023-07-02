@@ -5,6 +5,6 @@
     {
         public T Data { get; set; }
         public List<string> Errors { get; set; } = new List<string>();
-        public int Code { get; set; }
+        public ResponseCode Code { get; set; }
     }
 }

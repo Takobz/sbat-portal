@@ -2,13 +2,18 @@ using SBAT.Infrastructure.ServiceCollection;
 using SBAT.Web.Helpers;
 using SBAT.Web.ServiceCollection;
 using SBAT.Web.Settings;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 const string _allowAll = "freeForAll";
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => 
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -37,7 +42,7 @@ builder.Services.AddModelValidations();
 //Add more specific cors policies.
 builder.Services.AddCors(options =>  {
     options.AddPolicy(_allowAll, builder => {
-        builder.WithOrigins("https://localhost:5003", "http://localhost:5003");
+        builder.AllowAnyOrigin();
         builder.AllowAnyHeader();
         builder.AllowAnyMethod();
     });
@@ -54,12 +59,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors(_allowAll);
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors(_allowAll);
 app.MapControllers();
 
 app.Run();

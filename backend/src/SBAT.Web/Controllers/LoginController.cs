@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using SBAT.Web.Models.Common;
 using SBAT.Web.Models.Request;
 using SBAT.Web.Models.Response;
 using SBAT.Web.SBATValidation;
 using SBAT.Web.Services;
-using SBAT.Web.Services.Common;
 
 namespace SBAT.Web.Controllers
 {
@@ -28,23 +28,20 @@ namespace SBAT.Web.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest registerUser)
         {
             var createUserResponse = await _userService.CreateUserAsync(registerUser);
-            if (createUserResponse.Code == Code.Conflict)
+            if (createUserResponse.Code == ResponseCode.Conflict)
             {
-                return Conflict(new Response<EmptyResponse>
-                {
-                    Errors = createUserResponse.Errors
-                });
+                var response = Response<EmptyResponse>.CreateResponse(new EmptyResponse(), createUserResponse.Errors, ResponseCode.Conflict);
+                return Conflict(response);
             }
 
             var createdUser = Mapper.Map<UserResponse>(createUserResponse.Response);
-            return Created($"login/{createdUser!.UserName}", new Response<UserResponse> { Data  = createdUser});
+            return Created($"login/{createdUser!.UserName}", Response<UserResponse>.CreateResponse(createdUser, new List<string>(), ResponseCode.Success));
         }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("login/sign-in")]
         [SBATValidation<SignInUserRequest>]
-        [EnableCors("freeForAll")]
         public async Task<IActionResult> SignIn([FromBody] SignInUserRequest signInUser)
         {
             var tokenResponse = await _userService.SingInUserAsync(signInUser);
@@ -52,10 +49,8 @@ namespace SBAT.Web.Controllers
             if (string.IsNullOrEmpty(tokenResponse.Response))
                 return Unauthorized();
 
-            return Ok(new Response<SignInUserResponse>
-            {
-                Data = new SignInUserResponse { Username = signInUser.Username, JwtToken = tokenResponse.Response }
-            });
+            var responsedata = new SignInUserResponse { Username = signInUser.Username, JwtToken = tokenResponse.Response };
+            return Ok(Response<SignInUserResponse>.CreateResponse(responsedata, new List<string>(), ResponseCode.Success));
         }
 
         //TODO: Continue Registration - In case some step(s) failed
