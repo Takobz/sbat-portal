@@ -24,4 +24,12 @@
     <ProjectReference Include="..\SBAT.Infrastructure\SBAT.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="SBAT.Integration.Tests"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SBAT.Unit.Tests"/>
+  </ItemGroup>
+
 </Project>
