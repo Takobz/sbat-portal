@@ -19,6 +19,7 @@ namespace SBAT.Web.Services
 
         public async Task<ServiceResponse<ApplicationUser>> CreateUserAsync(RegisterUserRequest userRequest)
         {
+            //TODO: refactor this baby here 
             var username = $"{userRequest.IdentityType}-{userRequest.IdentityNumber}";
             var user = await _loginRepository.GetUserByNameAsync(username);
             if (user is not null)
