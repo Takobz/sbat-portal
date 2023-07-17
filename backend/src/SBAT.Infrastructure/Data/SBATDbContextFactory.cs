@@ -27,7 +27,7 @@ namespace SBAT.Infrastructure.Data
             var connectionString = configurationRoot.GetConnectionString("sbatDatabase");
             if(string.IsNullOrEmpty(connectionString))
             {
-                throw new ArgumentNullException("EF Core Design Time: sbatDatabase connection string is null");
+                throw new InvalidOperationException("EF Core Design Time: sbatDatabase connection string is null");
             }
             var optionsBuilder = new DbContextOptionsBuilder<SBATDbContext>();
             optionsBuilder.UseSqlite(configurationRoot.GetConnectionString("sbatDatabase"));
